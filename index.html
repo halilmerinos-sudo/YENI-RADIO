@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#07070a">
+<title>OTO RADYO DSP — Canlı Radyo &amp; Ekolayzer</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.15/hls.min.js"></script>
+<style>
+:root{
+  --bg-main:#07070a; --panel-bg:#15161b; --panel-2:#1b1d24; --border:#2a2c33; --border-soft:#1e2027;
+  --red:#ff3344; --green:#00e676; --orange:#ff9100; --cyan:#00e5ff; --blue:#0088ff; --yellow:#ffea00;
+  --txt:#ffffff; --muted:#8a8e9b; --led:#00ff66; --active-row:#2a1015;
+  --accent:#00e5ff; --focus:#ffea00;
+}
+[data-theme="light"]{
+  --bg-main:#c8cbd0; --panel-bg:#dbe0e6; --panel-2:#cfd5dd; --border:#a0a5ad; --border-soft:#b3b8bf;
+  --txt:#000000; --muted:#4a4f57; --active-row:#e8c0c0; --led:#0a9a3c;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*:focus-visible{outline:3px solid var(--focus)!important;outline-offset:2px!important}
+html,body{margin:0;padding:0;min-height:100%;background:
+  radial-gradient(circle at 18% -10%, rgba(0,229,255,.07), transparent 45%),
+  radial-gradient(circle at 95% 110%, rgba(0,136,255,.07), transparent 45%),
+  var(--bg-main);
+  color:var(--txt);font-family:'Consolas','SF Mono','Roboto Mono',Menlo,monospace;
+  user-select:none;overscroll-behavior-y:none;transition:background .4s,color .3s}
+.app{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:8px;
+  padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) calc(120px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+
+/* ---- panel temeli ---- */
+.block,.panel,.strip,.titlebar,.dspbar,.listbar,footer{
+  background:linear-gradient(180deg,var(--panel-bg),var(--panel-2));
+  border:1px solid var(--border);border-radius:14px}
+.btn{background:var(--panel-2);border:1px solid var(--border);color:var(--txt);
+  border-radius:10px;padding:7px 12px;font:inherit;font-size:11.5px;font-weight:700;cursor:pointer;
+  letter-spacing:.4px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.btn:active{transform:scale(.96)}
+.btn.on{border-color:var(--accent);color:var(--accent);box-shadow:0 0 12px -2px var(--accent) inset}
+.btn.danger.on{border-color:var(--red);color:var(--red);box-shadow:0 0 12px -2px var(--red) inset}
+
+/* ---- üst bar ---- */
+.titlebar{display:flex;align-items:center;gap:10px;padding:8px 12px;flex-wrap:wrap}
+.logo{font-size:12.5px;font-weight:800;letter-spacing:1.6px;color:var(--accent);
+  text-shadow:0 0 14px color-mix(in srgb,var(--accent) 60%,transparent)}
+.logo b{color:var(--txt)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.weather,.clock{display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.28);
+  border:1px solid var(--border-soft);border-radius:10px;padding:5px 10px}
+[data-theme="light"] .weather,[data-theme="light"] .clock{background:rgba(255,255,255,.45)}
+.weather select{background:transparent;border:none;color:var(--txt);font:inherit;font-size:11.5px;max-width:104px}
+.weather select option{background:var(--panel-bg);color:var(--txt)}
+.w-ico{font-size:17px}.w-temp{font-size:14px;font-weight:800;color:var(--green)}
+.w-desc{font-size:10px;color:var(--muted);max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.clock{font-variant-numeric:tabular-nums}
+#clkTime{font-size:14px;font-weight:800;color:var(--cyan)}
+#clkDate{font-size:10.5px;color:var(--orange)}
+
+/* ---- gösterge paneli ---- */
+.dash{display:grid;grid-template-columns:1.05fr 1.6fr .9fr;gap:8px}
+.block{padding:8px;position:relative;overflow:hidden}
+.viz-block{display:flex;flex-direction:column;gap:4px}
+#viz{width:100%;flex:1;min-height:96px;display:block;border-radius:8px;background:rgba(0,0,0,.35)}
+[data-theme="light"] #viz{background:rgba(255,255,255,.4)}
+.viz-tag{font-size:9px;letter-spacing:2px;color:var(--muted);text-align:center}
+
+.np-block{display:flex;align-items:center;gap:10px;min-height:132px}
+.speaker{width:46px;height:66px;flex:0 0 auto}
+.woofer{transform-origin:25px 45px;transition:transform .06s linear}
+.np{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;align-items:flex-start;position:relative}
+.cassette{width:44px;height:31px;opacity:.85}
+.reel{transform-origin:center;transform-box:fill-box}
+.reel.spin{animation:spin 2.4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.np-title{font-size:19px;font-weight:800;letter-spacing:1px;color:var(--accent);
+  text-shadow:0 0 18px color-mix(in srgb,var(--accent) 55%,transparent);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.np-det{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.np-freq{font-size:11px;font-weight:800;color:#07070a;background:var(--accent);border-radius:5px;padding:1px 7px}
+.np-genre{font-size:10.5px;color:var(--muted)}
+.sig{display:flex;gap:2px;align-items:flex-end;height:12px}
+.sig i{width:3px;height:4px;background:var(--border);border-radius:1px}
+.sig i:nth-child(2){height:6px}.sig i:nth-child(3){height:9px}.sig i:nth-child(4){height:12px}
+.sig i.on{background:var(--led);box-shadow:0 0 6px var(--led)}
+.ticker-wrap{height:14px;overflow:hidden;width:100%}
+.ticker{font-size:10px;color:var(--green);letter-spacing:.6px;white-space:nowrap;display:inline-block;animation:slide 5s linear infinite}
+.ticker.blink{animation:blink 1s steps(2) infinite;color:var(--orange)}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-6%)}}
+@keyframes blink{50%{opacity:.25}}
+.buffering{position:absolute;inset:auto 0 0 auto;display:none}
+.buffering.show{display:block}
+.spin{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+.ctrl-block{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.ctrl-row{display:flex;align-items:center;gap:8px}
+.cbtn{width:48px;height:48px;border-radius:12px;background:var(--panel-2);border:1px solid var(--border);
+  color:var(--txt);font-size:18px;cursor:pointer;display:grid;place-items:center}
+.cbtn:active{transform:scale(.94)}
+.cbtn.play{width:62px;height:62px;border-radius:16px;font-size:24px;color:#07070a;
+  background:linear-gradient(160deg,var(--accent),color-mix(in srgb,var(--accent) 45%,#0088ff));
+  border-color:transparent;box-shadow:0 6px 22px -6px var(--accent)}
+.cbtn.stop{color:var(--red)}
+.status{font-size:10px;color:var(--muted);text-align:center;line-height:1.4;max-width:220px}
+.elapsed{font-size:11px;color:var(--yellow);font-variant-numeric:tabular-nums}
+
+/* ---- DSP bar ---- */
+.dspbar{padding:8px 12px;display:flex;flex-direction:column;gap:8px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.row .lbl{font-size:9.5px;letter-spacing:1.4px;color:var(--muted);min-width:64px}
+.pchips{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.pchip{background:var(--panel-2);border:1px solid var(--border);color:var(--txt);border-radius:20px;
+  padding:5px 12px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}
+.pchip.on{background:linear-gradient(135deg,var(--accent),#0088ff);color:#07070a;border-color:transparent}
+.tone{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.22);border:1px solid var(--border-soft);
+  border-radius:10px;padding:4px 9px}
+[data-theme="light"] .tone{background:rgba(255,255,255,.4)}
+.tone span.t{font-size:9.5px;color:var(--muted);letter-spacing:1px}
+.tone span.v{font-size:11px;font-weight:800;color:var(--green);min-width:34px;text-align:right}
+input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:99px;background:linear-gradient(90deg,var(--accent),#0088ff)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+  background:#fff;border:3px solid var(--accent);margin-top:-7px}
+input[type=range]::-moz-range-track{height:5px;border-radius:99px;background:linear-gradient(90deg,var(--accent),#0088ff)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border:3px solid var(--accent);background:#fff;border-radius:50%}
+.tone input[type=range]{width:88px;height:22px}
+.volrow{gap:12px}
+.volrow input[type=range]{flex:1;height:30px}
+.volrow input[type=range]::-webkit-slider-runnable-track{height:10px}
+.volrow input[type=range]::-webkit-slider-thumb{width:26px;height:26px;border-width:4px;margin-top:-8px}
+.volpct{font-size:13px;font-weight:800;color:var(--yellow);min-width:44px;text-align:right}
+
+/* ---- 10 bant EQ ---- */
+.panel{overflow:hidden}
+.ph{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;font-size:11.5px;font-weight:800;letter-spacing:1px}
+.ph .arw{margin-left:auto;color:var(--muted)}
+.panel.open .ph .arw{transform:rotate(180deg)}
+.pb{display:none;padding:0 12px 12px}
+.panel.open .pb{display:block}
+.bands{display:flex;gap:4px;justify-content:space-between;background:rgba(0,0,0,.24);
+  border:1px solid var(--border-soft);border-radius:10px;padding:10px 6px}
+[data-theme="light"] .bands{background:rgba(255,255,255,.4)}
+.band{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
+.band input[type=range]{writing-mode:vertical-lr;direction:rtl;-webkit-appearance:slider-vertical;width:24px;height:108px}
+.band .hz{font-size:9px;color:var(--muted);font-weight:700}
+.band .db{font-size:9px;color:var(--accent);font-weight:800;font-variant-numeric:tabular-nums}
+
+/* ---- şeritler ---- */
+.strip{padding:6px 12px;display:flex;align-items:center;gap:7px;overflow-x:auto;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.strip .lbl{font-size:9px;letter-spacing:1.4px;color:var(--muted);flex:0 0 auto}
+.qs{flex:0 0 auto;background:var(--panel-2);border:1px dashed var(--border);color:var(--muted);
+  border-radius:8px;padding:4px 9px;font:inherit;font-size:10.5px;cursor:pointer;display:flex;gap:5px;align-items:center}
+.qs.filled{border-style:solid;color:var(--txt)}
+.qs.act{border-color:var(--accent);color:var(--accent)}
+.qs .n{font-size:9px;color:var(--yellow);font-weight:800}
+.chip{flex:0 0 auto;background:var(--panel-2);border:1px solid var(--border);color:var(--txt);
+  border-radius:20px;padding:4px 11px;font:inherit;font-size:10.5px;cursor:pointer}
+
+/* ---- liste ---- */
+.listbar{padding:8px 12px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.fchip{background:var(--panel-2);border:1px solid var(--border);color:var(--muted);border-radius:20px;
+  padding:5px 12px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}
+.fchip.on{background:linear-gradient(135deg,var(--accent),#0088ff);color:#07070a;border-color:transparent}
+.search{background:rgba(0,0,0,.28);border:1px solid var(--border);color:var(--txt);font:inherit;
+  font-size:11.5px;border-radius:10px;padding:6px 10px;min-width:120px;flex:1}
+.stations{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:8px}
+.st{display:flex;align-items:center;gap:9px;padding:9px 10px;text-align:left;cursor:pointer;
+  background:linear-gradient(180deg,var(--panel-bg),var(--panel-2));border:1px solid var(--border);
+  border-radius:12px;color:var(--txt);position:relative;overflow:hidden}
+.st:active{transform:scale(.985)}
+.st.on{border-color:var(--sa);background:var(--active-row);box-shadow:0 0 0 1px var(--sa) inset}
+.st .ab{width:38px;height:38px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto;
+  font-size:12px;font-weight:900;color:#07070a;background:var(--sa)}
+.st .info{min-width:0;flex:1}
+.st .nm{font-size:12.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st .sb{font-size:9.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st .fq{font-size:9.5px;color:var(--sa);font-weight:800;margin-top:2px}
+.st .fav{background:none;border:none;color:var(--border);font-size:14px;cursor:pointer;padding:2px 0 2px 4px}
+.st .fav.on{color:var(--yellow)}
+.st .bars{position:absolute;right:8px;bottom:7px;display:flex;gap:2px;align-items:flex-end;height:11px;opacity:0}
+.st.on .bars{opacity:1}
+.st .bars i{width:3px;background:var(--sa);border-radius:1px;animation:eqb .9s ease-in-out infinite}
+.st .bars i:nth-child(2){animation-delay:.14s}.st .bars i:nth-child(3){animation-delay:.3s}
+@keyframes eqb{0%,100%{height:3px}50%{height:11px}}
+
+footer{padding:7px 12px;font-size:9.5px;color:var(--muted);line-height:1.6}
+
+/* ---- mini oynatıcı ---- */
+.mini{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;align-items:center;gap:10px;
+  padding:9px 14px calc(9px + env(safe-area-inset-bottom));
+  background:color-mix(in srgb,var(--panel-bg) 92%,transparent);border-top:1px solid var(--border);
+  backdrop-filter:blur(12px)}
+.mini .ab{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;font-size:11px;
+  font-weight:900;color:#07070a;background:var(--accent);flex:0 0 auto}
+.mini .mt{min-width:0;flex:1}
+.mini .m1{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini .m2{font-size:9.5px;color:var(--muted)}
+.mini .cbtn{width:42px;height:42px;font-size:16px}
+
+/* ---- sürüş modu ---- */
+.drive{position:fixed;inset:0;z-index:60;background:var(--bg-main);display:none;flex-direction:column;
+  gap:10px;padding:max(10px,env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom))}
+.drive.show{display:flex}
+.drive-top{display:flex;align-items:center;gap:10px}
+.dr-title{font-size:26px;font-weight:900;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.dr-sub{font-size:12px;color:var(--muted)}
+.dr-ctrl{display:flex;align-items:center;justify-content:center;gap:14px}
+.dr-ctrl .cbtn{width:74px;height:74px;font-size:28px;border-radius:18px}
+.dr-ctrl .cbtn.play{width:96px;height:96px;font-size:36px;border-radius:24px}
+.dr-grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;align-content:start}
+.dr-st{padding:16px 12px;border-radius:14px;border:2px solid var(--border);background:var(--panel-bg);
+  color:var(--txt);font:inherit;font-size:15px;font-weight:800;cursor:pointer;text-align:left;line-height:1.3}
+.dr-st span{display:block;font-size:10.5px;color:var(--muted);font-weight:700;margin-top:4px}
+.dr-st.on{border-color:var(--sa);color:var(--sa);box-shadow:0 0 22px -8px var(--sa)}
+
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(18px);z-index:80;
+  background:var(--panel-bg);border:1px solid var(--accent);color:var(--txt);border-radius:12px;
+  padding:9px 15px;font-size:11.5px;opacity:0;pointer-events:none;transition:.25s;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.72);display:none;place-items:center;padding:18px}
+.modal.show{display:grid}
+.mbox{background:var(--panel-bg);border:1px solid var(--border);border-radius:16px;padding:16px;width:min(420px,100%)}
+.mbox h3{margin:0 0 12px;font-size:13px;letter-spacing:1px}
+.mbox input{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--border);color:var(--txt);
+  font:inherit;font-size:12px;border-radius:10px;padding:9px 11px;margin-bottom:9px}
+
+@media (max-width:900px){
+  .dash{grid-template-columns:1fr}
+  .viz-block{order:2}.np-block{order:1}.ctrl-block{order:3}
+  .w-desc{display:none}
+  .tone input[type=range]{width:72px}
+}
+@media (max-width:420px){
+  .logo{font-size:11px}
+  .weather select{max-width:78px;font-size:10.5px}
+  .np-title{font-size:17px}
+  .stations{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="titlebar">
+    <span class="logo">OTO <b>RADYO</b> DSP</span>
+    <div class="tb-right">
+      <div class="weather">
+        <select id="citySelect" aria-label="Şehir seç"></select>
+        <span class="w-ico" id="wIco">⏳</span>
+        <span class="w-temp" id="wTemp">--°</span>
+        <span class="w-desc" id="wDesc">Yükleniyor</span>
+      </div>
+      <div class="clock"><span id="clkTime">00:00:00</span><span id="clkDate">--.--.----</span></div>
+      <button class="btn" id="btnMute">🔊 SES</button>
+      <button class="btn" id="btnSleep">⏱️ <span id="sleepTxt">Zamanlayıcı</span></button>
+      <button class="btn" id="btnTheme">🌙 <span id="themeTxt">Gece</span></button>
+      <button class="btn" id="btnDrive">🚗 Sürüş Modu</button>
+    </div>
+  </div>
+
+  <div class="dash">
+    <div class="block viz-block">
+      <canvas id="viz"></canvas>
+      <div class="viz-tag">SPEKTRUM ANALİZ · 10 BANT DSP</div>
+    </div>
+
+    <div class="block np-block">
+      <svg class="speaker" id="spkL" viewBox="0 0 50 70" aria-hidden="true">
+        <rect x="2" y="2" width="46" height="66" rx="6" fill="#101014" stroke="var(--border)"/>
+        <circle cx="25" cy="18" r="8" fill="#0b0b0e" stroke="var(--accent)" stroke-width="1"/>
+        <circle cx="25" cy="18" r="3" fill="var(--accent)"/>
+        <g class="woofer">
+          <circle cx="25" cy="45" r="18" fill="#141418" stroke="var(--accent)" stroke-width="1.5"/>
+          <circle cx="25" cy="45" r="12" fill="#0d0d11" stroke="var(--border)"/>
+          <circle cx="25" cy="45" r="6" fill="var(--accent)" opacity=".85"/>
+        </g>
+      </svg>
+
+      <div class="np">
+        <svg class="cassette" viewBox="0 0 48 34" aria-hidden="true">
+          <rect x="1" y="1" width="46" height="32" rx="4" fill="#101014" stroke="var(--border)"/>
+          <circle class="reel" id="reelL" cx="15" cy="17" r="7" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 3"/>
+          <circle class="reel" id="reelR" cx="33" cy="17" r="7" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 3"/>
+        </svg>
+        <div class="np-title" id="npTitle">RADYO SEÇİN</div>
+        <div class="np-det">
+          <span class="np-freq" id="npFreq">--.-- MHz</span>
+          <span class="np-genre" id="npGenre">Hazır</span>
+          <span class="sig" id="sig"><i></i><i></i><i></i><i></i></span>
+        </div>
+        <div class="ticker-wrap"><span class="ticker" id="ticker">BAĞLANTI BEKLENİYOR</span></div>
+        <div class="buffering" id="buffering"><div class="spin"></div></div>
+      </div>
+
+      <svg class="speaker" id="spkR" viewBox="0 0 50 70" aria-hidden="true">
+        <rect x="2" y="2" width="46" height="66" rx="6" fill="#101014" stroke="var(--border)"/>
+        <circle cx="25" cy="18" r="8" fill="#0b0b0e" stroke="var(--accent)" stroke-width="1"/>
+        <circle cx="25" cy="18" r="3" fill="var(--accent)"/>
+        <g class="woofer">
+          <circle cx="25" cy="45" r="18" fill="#141418" stroke="var(--accent)" stroke-width="1.5"/>
+          <circle cx="25" cy="45" r="12" fill="#0d0d11" stroke="var(--border)"/>
+          <circle cx="25" cy="45" r="6" fill="var(--accent)" opacity=".85"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="block ctrl-block">
+      <div class="ctrl-row">
+        <button class="cbtn" id="btnPrev" aria-label="Önceki">⏮</button>
+        <button class="cbtn play" id="btnPlay" aria-label="Oynat">▶</button>
+        <button class="cbtn stop" id="btnStop" aria-label="Durdur">⏹</button>
+        <button class="cbtn" id="btnNext" aria-label="Sonraki">⏭</button>
+      </div>
+      <div class="elapsed" id="elapsed">00:00</div>
+      <div class="status" id="status">Yayın Durumu: Hazır</div>
+    </div>
+  </div>
+
+  <div class="dspbar">
+    <div class="row">
+      <span class="lbl">DSP PROFİL</span>
+      <div class="pchips" id="presetRow"></div>
+      <button class="btn" id="btnSavePreset">+ Kaydet</button>
+    </div>
+    <div class="row">
+      <span class="lbl">TON</span>
+      <label class="tone"><span class="t">BAS</span><input type="range" id="sBass" min="-12" max="12" step="1" value="0"><span class="v" id="vBass">0dB</span></label>
+      <label class="tone"><span class="t">ORTA</span><input type="range" id="sMid" min="-12" max="12" step="1" value="0"><span class="v" id="vMid">0dB</span></label>
+      <label class="tone"><span class="t">TİZ</span><input type="range" id="sTreb" min="-12" max="12" step="1" value="0"><span class="v" id="vTreb">0dB</span></label>
+      <label class="tone"><span class="t">DENGE</span><input type="range" id="sBal" min="-1" max="1" step="0.1" value="0"><span class="v" id="vBal">C</span></label>
+      <button class="btn" id="btnNorm">🎚️ Normalize</button>
+      <button class="btn on" id="btnEq">🎛️ Ekolayzer</button>
+    </div>
+    <div class="row volrow">
+      <span class="lbl">SES</span>
+      <input type="range" id="sVol" min="0" max="100" step="1" value="85" aria-label="Ses seviyesi">
+      <span class="volpct" id="vVol">85%</span>
+    </div>
+  </div>
+
+  <div class="panel open" id="eqPanel">
+    <div class="ph" id="eqHead">🎚️ 10 BANT GRAFİK EKOLAYZER <span class="arw">▾</span></div>
+    <div class="pb">
+      <div class="bands" id="bands"></div>
+    </div>
+  </div>
+
+  <div class="strip">
+    <span class="lbl">HIZLI</span>
+    <div id="slots" style="display:flex;gap:7px"></div>
+    <button class="btn" id="btnAssign">📌 Slota Ata</button>
+  </div>
+
+  <div class="strip">
+    <span class="lbl">SON</span>
+    <div id="recent" style="display:flex;gap:7px"></div>
+  </div>
+
+  <div class="listbar" id="filters"></div>
+  <div class="listbar">
+    <input class="search" id="search" placeholder="Radyo ara…" aria-label="Radyo ara">
+    <button class="btn" id="btnAdd">➕ Radyo Ekle</button>
+    <button class="btn" id="btnWake">👁️ Ekran Açık</button>
+  </div>
+
+  <div class="stations" id="list"></div>
+
+  <footer>
+    ⓘ Yayın adresleri değişebilir. Bir kanal açılmazsa uygulama sırayla yedek adresleri ve doğrudan çalma modunu dener.<br>
+    Ekolayzer, yayın sunucusu izin verdiğinde devreye girer; izin vermeyen yayınlar otomatik olarak doğrudan çalınır.
+  </footer>
+</div>
+
+<div class="mini">
+  <div class="ab" id="mAb">--</div>
+  <div class="mt">
+    <div class="m1" id="mName">Radyo seçin</div>
+    <div class="m2" id="mSub">Hazır</div>
+  </div>
+  <button class="cbtn" id="mPrev" aria-label="Önceki">⏮</button>
+  <button class="cbtn play" id="mPlay" aria-label="Oynat">▶</button>
+  <button class="cbtn" id="mNext" aria-label="Sonraki">⏭</button>
+</div>
+
+<div class="drive" id="drive">
+  <div class="drive-top">
+    <div style="flex:1;min-width:0">
+      <div class="dr-title" id="drTitle">RADYO SEÇİN</div>
+      <div class="dr-sub" id="drSub">--.-- MHz</div>
+    </div>
+    <div class="clock"><span id="drClock">00:00</span></div>
+    <button class="btn" id="drExit">✕ ÇIK</button>
+  </div>
+  <div class="dr-ctrl">
+    <button class="cbtn" id="drPrev">⏮</button>
+    <button class="cbtn play" id="drPlay">▶</button>
+    <button class="cbtn" id="drNext">⏭</button>
+    <button class="cbtn" id="drVolDn">🔉</button>
+    <button class="cbtn" id="drVolUp">🔊</button>
+  </div>
+  <div class="dr-grid" id="drGrid"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="modalAdd">
+  <div class="mbox">
+    <h3>KENDİ RADYONU EKLE</h3>
+    <input id="addName" placeholder="Radyo adı">
+    <input id="addFreq" placeholder="Frekans (örn. 101.50) — boş kalabilir">
+    <input id="addUrl" placeholder="Yayın adresi (m3u8 / mp3 / aac)">
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn" id="addCancel">Vazgeç</button>
+      <button class="btn on" id="addOk">Ekle</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalSleep">
+  <div class="mbox">
+    <h3>UYKU ZAMANLAYICI</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap" id="sleepOpts"></div>
+  </div>
+</div>
+<script>
+"use strict";
+
+/* ================= RADYO LİSTESİ =================
+   src[0] = çalışması doğrulanmış/birincil adres, sonrası yedekler */
+const STATIONS = [
+  {id:"kralpop", name:"Kral Pop", sub:"Pop Müzik Hit", freq:"94.70", cat:"Pop", ac:"#ff5fa2", ab:"KP", tags:["pop"],
+   src:["https://ssldyg.radyotvonline.com/smil/smil:kralpop.smil/playlist.m3u8","http://46.20.3.201/;type=mp3","https://dygmaster.radyotvonline.net/kralpop/playlist.m3u8"]},
+  {id:"kralfm", name:"Kral FM", sub:"Arabesk & Fantezi Müzik", freq:"98.60", cat:"Arabesk", ac:"#ffb02e", ab:"KF", tags:["arabesk","pop"],
+   src:["https://ssldyg.radyotvonline.com/smil/smil:kralfm.smil/playlist.m3u8","http://46.20.3.204/;type=mp3","https://dygmaster.radyotvonline.net/kralfm/playlist.m3u8"]},
+  {id:"baba", name:"Baba Radyo", sub:"İstanbul · Arabesk", freq:"105.60", cat:"Arabesk", ac:"#00e5ff", ab:"BR", tags:["arabesk"],
+   src:["https://babaradyo.turkhosted.com/best/babaradyo.stream/playlist.m3u8","https://37.247.98.7/babaradyomp3","https://officialbabaradyo.radyotvonline.net/babaofficial"]},
+  {id:"ferdi", name:"Kral Ferdi Tayfur", sub:"7/24 Ferdi Tayfur Şarkıları", freq:"99.90", cat:"Arabesk", ac:"#ffd166", ab:"FT", tags:["arabesk","nostalji"],
+   src:["http://46.20.3.250/;stream","https://ssl4.radyotvonline.com/radyo7/radyo7_home.stream/playlist.m3u8"]},
+  {id:"efsane4", name:"Efsane 4'lü", sub:"Efsane Arabesk Sanatçıları", freq:"94.40", cat:"Arabesk", ac:"#38bdf8", ab:"E4", tags:["arabesk","nostalji"],
+   src:["https://moondigitalmaster.radyotvonline.net/efsane4lu/playlist.m3u8","http://37.247.98.8/stream/19/"]},
+  {id:"park", name:"Park FM", sub:"Ankara · Arabesk & Yöresel", freq:"96.90", cat:"Arabesk", ac:"#ff3d9a", ab:"PF", tags:["arabesk","turku"],
+   src:["https://s03.diazol.hu:7142/stream.mp3","http://park.netradyom.com:1345/;stream.nsv"]},
+  {id:"powerfm", name:"Power FM", sub:"Yabancı Hit Pop", freq:"100.00", cat:"Pop", ac:"#22c1c3", ab:"PW", tags:["pop"],
+   src:["https://listen.powerapp.com.tr/powerfm/mpeg/icecast.audio"]},
+  {id:"palfm", name:"Pal FM", sub:"Müziğin Türkçesi", freq:"106.60", cat:"Pop", ac:"#ffb703", ab:"PL", tags:["pop","slow"],
+   src:["https://moondigitalmaster.radyotvonline.net/palfm/playlist.m3u8","https://ssl4.radyotvonline.com/radyohome/palfmhome.stream_aac/playlist.m3u8"]},
+  {id:"risalet", name:"Risalet Radyo", sub:"Diyanet · Siyer & Sohbet", freq:"90.10", cat:"Din", ac:"#34d399", ab:"RR", tags:["manevi"],
+   src:["https://eustr73.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c1520b2626.smil/playlist.m3u8","https://eustr76.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c1520b2626.smil/playlist.m3u8"]},
+  {id:"vav", name:"VAV Radyo", sub:"Kur'an'ın Sesi", freq:"91.60", cat:"Din", ac:"#059669", ab:"VV", tags:["manevi"],
+   src:["https://trkvz-radyolar.ercdn.net/radyovav/playlist.m3u8"]},
+  {id:"turkuvaz", name:"Radyo Turkuvaz", sub:"Türkiye'nin Radyosu", freq:"93.60", cat:"Genel", ac:"#06b6d4", ab:"RT", tags:["pop","arabesk"],
+   src:["https://trkvz-radyolar.ercdn.net/radyoturkuvaz/playlist.m3u8","https://moondigitalmaster2.radyotvonline.net/radyoturkuvaz/playlist.m3u8"]},
+  {id:"tkmusiki", name:"Turkuvaz Musiki", sub:"Gönülden Nağmeler · TSM", freq:"95.30", cat:"Sanat Müziği", ac:"#7c3aed", ab:"TM", tags:["tsm"],
+   src:["https://trkvz-radyolar.ercdn.net/turkuvazmusiki/playlist.m3u8"]},
+  {id:"tknostalji", name:"Turkuvaz Nostalji", sub:"Zamansız Şarkılar", freq:"97.10", cat:"Nostalji", ac:"#c2703a", ab:"TN", tags:["nostalji"],
+   src:["https://trkvz-radyolar.ercdn.net/turkuvaznostalji/playlist.m3u8"]},
+  {id:"tkefsane", name:"Turkuvaz Efsane", sub:"Müziğin Efsanesi", freq:"94.90", cat:"Arabesk", ac:"#e04141", ab:"TE", tags:["arabesk","nostalji"],
+   src:["https://trkvz-radyolar.ercdn.net/turkuvazefsane/playlist.m3u8"]},
+  {id:"tkromantik", name:"Turkuvaz Romantik", sub:"Kalbinin Sesini Dinle", freq:"101.90", cat:"Romantik", ac:"#db2777", ab:"TR", tags:["slow"],
+   src:["https://trkvz-radyolar.ercdn.net/turkuvazromantik/playlist.m3u8"]},
+  {id:"tkanadolu", name:"Turkuvaz Anadolu", sub:"Yerli ve Milli Radyo · Türküler", freq:"103.40", cat:"Türkü", ac:"#ca8a04", ab:"TA", tags:["turku"],
+   src:["https://trkvz-radyolar.ercdn.net/turkuvazanadolu/playlist.m3u8"]},
+  {id:"energy", name:"Radyo Energy", sub:"Durmak Yok · Enerjik Hit Pop", freq:"99.30", cat:"Pop", ac:"#f97316", ab:"EN", tags:["pop"],
+   src:["https://trkvz-radyolar.ercdn.net/radyoenergy/playlist.m3u8"]},
+  {id:"soft", name:"Radyo Soft", sub:"Her Dilde Kalbin Sesi", freq:"88.90", cat:"Pop", ac:"#ec4899", ab:"SF", tags:["pop","slow"],
+   src:["https://trkvz-radyolar.ercdn.net/radyosoft/playlist.m3u8"]},
+  {id:"joyjazz", name:"Joy Jazz", sub:"Caz · Jazz", freq:"95.00", cat:"Caz", ac:"#c9a227", ab:"JJ", tags:["caz"],
+   src:["https://playerservices.streamtheworld.com/api/livestream-redirect/JOY_JAZZ128AAC.aac"]},
+  {id:"akustik", name:"Joy Türk Akustik", sub:"Akustik · Slow", freq:"98.20", cat:"Akustik", ac:"#2a9d8f", ab:"JA", tags:["slow","caz"],
+   src:["https://playerservices.streamtheworld.com/api/livestream-redirect/JOYTURK_AKUSTIK128AAC.aac"]},
+  {id:"fenomenpop", name:"Fenomen Pop", sub:"Yabancı Pop", freq:"96.10", cat:"Pop", ac:"#8338ec", ab:"FP", tags:["pop"],
+   src:["https://live.radyofenomen.com/fenomenpop/abr/playlist.m3u8"]},
+  {id:"fenomenturk", name:"Fenomen Türk", sub:"Türkçe Hit", freq:"96.40", cat:"Pop", ac:"#4cc9f0", ab:"FT2", tags:["pop"],
+   src:["https://live.radyofenomen.com/fenomenturk/abr/playlist.m3u8"]},
+  {id:"doksan", name:"90'lar Radyo", sub:"Nostalji 90'lar", freq:"90.90", cat:"Nostalji", ac:"#fcbf49", ab:"90", tags:["nostalji"],
+   src:["https://moondigitalmaster.radyotvonline.net/90lar/playlist.m3u8","https://moondigitaledge.radyotvonline.net/90lar/playlist.m3u8"]},
+  {id:"ankara", name:"Ankara Havaları", sub:"Türkü · Oyun Havası", freq:"102.30", cat:"Türkü", ac:"#ffca3a", ab:"AH", tags:["turku"],
+   src:["https://moondigitalmaster.radyotvonline.net/ankarahavalari/playlist.m3u8"]},
+  {id:"karadeniz", name:"Karadeniz FM", sub:"Karadeniz · Türkü", freq:"104.20", cat:"Türkü", ac:"#48cae4", ab:"KD", tags:["turku"],
+   src:["https://moondigitaledge.radyotvonline.net/karadenizfm/playlist.m3u8","http://moondigitalmaster.radyotvonline.net/karadenizfm/playlist.m3u8"]},
+  {id:"alem", name:"Alem FM", sub:"Türkçe Karışık", freq:"101.10", cat:"Genel", ac:"#ffb703", ab:"AL", tags:["pop","arabesk"],
+   src:["https://alemfm.radyotvonline.net/alemfmaac","http://turkmedya.radyotvonline.net/alemfmaac"]},
+  {id:"best", name:"Best FM", sub:"Pop · Hit", freq:"98.40", cat:"Pop", ac:"#a8dadc", ab:"BF", tags:["pop"],
+   src:["https://officialbestfm.radyotvonline.net/bestfmofficial","https://bestfm.turkhosted.com/;stream.mp3"]},
+  {id:"ahaber", name:"A Haber Radyo", sub:"Haberin Radyosu", freq:"90.20", cat:"Haber", ac:"#dc2626", ab:"AH2", tags:["haber"],
+   src:["https://trkvz-radyolar.ercdn.net/ahaberradyo/playlist.m3u8"]},
+  {id:"anews", name:"A News Radio", sub:"The Channel of the New World", freq:"87.60", cat:"Haber", ac:"#2563eb", ab:"AN", tags:["haber"],
+   src:["https://trkvz-radyolar.ercdn.net/anewsradyo/playlist.m3u8"]},
+  {id:"aspor", name:"A Spor Radyo", sub:"Sporun Keyif ve Heyecanı", freq:"92.40", cat:"Spor", ac:"#16a34a", ab:"AS", tags:["spor"],
+   src:["https://trkvz-radyolar.ercdn.net/asporradyo/playlist.m3u8"]},
+  {id:"apara", name:"A Para Radyo", sub:"Türkiye'nin Ekonomi Kanalı", freq:"89.80", cat:"Ekonomi", ac:"#eab308", ab:"AP", tags:["haber"],
+   src:["https://trkvz-radyolar.ercdn.net/apararadyo/playlist.m3u8"]}
+];
+
+const FILTERS = [
+  {k:"all", n:"Tümü"}, {k:"fav", n:"⭐ Favoriler"}, {k:"pop", n:"Pop"}, {k:"arabesk", n:"Arabesk"},
+  {k:"caz", n:"Caz"}, {k:"slow", n:"Slow"}, {k:"turku", n:"Türkü"}, {k:"tsm", n:"Sanat Müziği"},
+  {k:"nostalji", n:"Nostalji"}, {k:"manevi", n:"Manevi"}, {k:"haber", n:"Haber"},
+  {k:"spor", n:"Spor"}, {k:"custom", n:"Benim Radyolarım"}
+];
+
+const BANDS = [
+  {f:32,l:"32"},{f:64,l:"64"},{f:125,l:"125"},{f:250,l:"250"},{f:500,l:"500"},
+  {f:1000,l:"1K"},{f:2000,l:"2K"},{f:4000,l:"4K"},{f:8000,l:"8K"},{f:16000,l:"16K"}
+];
+
+const PRESETS = {
+  "Normal"       : [0,0,0,0,0,0,0,0,0,0],
+  "Derin Bas"    : [8,7,5,2,0,0,0,1,1,1],
+  "Net Sesler"   : [-3,-2,0,2,4,4,3,1,0,-1],
+  "5.1 Surround" : [4,3,1,0,-2,0,2,4,5,4],
+  "Arabesk"      : [4,5,3,1,-1,1,3,4,3,1],
+  "Pop"          : [-1,1,3,2,0,-1,1,3,3,2],
+  "Caz"          : [3,2,1,2,-1,-1,0,2,3,4],
+  "Rock"         : [5,4,2,-1,-2,1,3,4,4,3],
+  "Türkü"        : [2,3,2,2,1,2,2,1,0,-1],
+  "Araç Modu"    : [5,4,2,0,-1,0,2,3,3,2]
+};
+
+const CITIES = [
+  ["Adana",37.00,35.32],["Adıyaman",37.76,38.28],["Afyonkarahisar",38.75,30.54],["Ağrı",39.72,43.05],
+  ["Aksaray",38.37,34.03],["Amasya",40.65,35.83],["Ankara",39.93,32.86],["Antalya",36.90,30.71],
+  ["Ardahan",41.11,42.70],["Artvin",41.18,41.82],["Aydın",37.85,27.85],["Balıkesir",39.65,27.88],
+  ["Bartın",41.63,32.34],["Batman",37.88,41.13],["Bayburt",40.26,40.22],["Bilecik",40.15,29.98],
+  ["Bingöl",38.88,40.50],["Bitlis",38.40,42.11],["Bolu",40.73,31.61],["Burdur",37.72,30.29],
+  ["Bursa",40.18,29.06],["Çanakkale",40.15,26.41],["Çankırı",40.60,33.62],["Çorum",40.55,34.95],
+  ["Denizli",37.77,29.09],["Diyarbakır",37.91,40.24],["Düzce",40.84,31.16],["Edirne",41.68,26.56],
+  ["Elazığ",38.68,39.22],["Erzincan",39.75,39.49],["Erzurum",39.90,41.27],["Eskişehir",39.78,30.52],
+  ["Gaziantep",37.07,37.38],["Giresun",40.91,38.39],["Gümüşhane",40.46,39.48],["Hakkari",37.58,43.74],
+  ["Hatay",36.20,36.16],["Iğdır",39.92,44.04],["Isparta",37.77,30.55],["İstanbul",41.01,28.98],
+  ["İzmir",38.42,27.14],["Kahramanmaraş",37.58,36.94],["Karabük",41.20,32.63],["Karaman",37.18,33.22],
+  ["Kars",40.61,43.10],["Kastamonu",41.38,33.78],["Kayseri",38.73,35.49],["Kilis",36.72,37.12],
+  ["Kırıkkale",39.85,33.51],["Kırklareli",41.73,27.22],["Kırşehir",39.15,34.16],["Kocaeli",40.85,29.88],
+  ["Konya",37.87,32.48],["Kütahya",39.42,29.98],["Malatya",38.36,38.31],["Manisa",38.61,27.43],
+  ["Mardin",37.31,40.74],["Mersin",36.81,34.64],["Muğla",37.22,28.36],["Muş",38.75,41.49],
+  ["Nevşehir",38.62,34.72],["Niğde",37.97,34.68],["Ordu",40.98,37.88],["Osmaniye",37.07,36.25],
+  ["Rize",41.02,40.52],["Sakarya",40.78,30.40],["Samsun",41.29,36.33],["Şanlıurfa",37.16,38.79],
+  ["Siirt",37.93,41.94],["Sinop",42.03,35.15],["Sivas",39.75,37.02],["Şırnak",37.52,42.46],
+  ["Tekirdağ",40.98,27.51],["Tokat",40.31,36.55],["Trabzon",41.00,39.72],["Tunceli",39.11,39.55],
+  ["Uşak",38.68,29.41],["Van",38.49,43.38],["Yalova",40.65,29.28],["Yozgat",39.82,34.80],
+  ["Zonguldak",41.46,31.79]
+];
+
+const WCODES = {
+  0:["☀️","Açık"],1:["🌤️","Az Bulutlu"],2:["⛅","Parçalı Bulutlu"],3:["☁️","Bulutlu"],
+  45:["🌫️","Sisli"],48:["🌫️","Kırağı Sisi"],51:["🌦️","Hafif Çisenti"],53:["🌦️","Çisenti"],
+  55:["🌧️","Yoğun Çisenti"],61:["🌧️","Hafif Yağmur"],63:["🌧️","Yağmurlu"],65:["🌧️","Şiddetli Yağmur"],
+  66:["🌧️","Dondurucu Yağmur"],67:["🌧️","Şiddetli Dondurucu Yağmur"],71:["🌨️","Hafif Kar"],
+  73:["🌨️","Kar Yağışlı"],75:["❄️","Yoğun Kar"],77:["❄️","Kar Taneleri"],80:["🌦️","Sağanak"],
+  81:["🌧️","Kuvvetli Sağanak"],82:["⛈️","Şiddetli Sağanak"],85:["🌨️","Kar Sağanağı"],
+  86:["❄️","Yoğun Kar Sağanağı"],95:["⛈️","Gök Gürültülü Fırtına"],96:["⛈️","Dolulu Fırtına"],
+  99:["⛈️","Şiddetli Dolulu Fırtına"]
+};
+
+/* ================= DEPOLAMA ================= */
+const LS = {
+  get(k,d){ try{ const v=localStorage.getItem("otoradyo_"+k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
+  set(k,v){ try{ localStorage.setItem("otoradyo_"+k, JSON.stringify(v)); }catch(e){} }
+};
+
+const state = {
+  list: STATIONS.concat((LS.get("custom",[])||[]).map(c=>({...c, tags:["custom"]}))),
+  filter: "all",
+  q: "",
+  favs: LS.get("favs",[]) || [],
+  gains: LS.get("gains", PRESETS["Normal"].slice()),
+  preset: LS.get("preset","Normal"),
+  userPresets: LS.get("userPresets", {}) || {},
+  eqOn: LS.get("eqOn", true),
+  tone: LS.get("tone", {bass:0, mid:0, treb:0, bal:0}),
+  norm: LS.get("norm", false),
+  vol: LS.get("vol", 85),
+  muted: false,
+  theme: LS.get("theme", "dark"),
+  slots: LS.get("slots", [null,null,null,null,null,null]),
+  recent: LS.get("recent", []) || [],
+  city: LS.get("city", "Ankara"),
+  current: null, srcIdx: 0, mode: "eq", playing: false, elapsed: 0, assign: false
+};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const byId = id => state.list.find(s=>s.id===id);
+
+/* ================= SES MOTORU ================= */
+const audioA = new Audio(); audioA.crossOrigin = "anonymous"; audioA.preload = "none";
+const audioB = new Audio(); audioB.preload = "none";
+[audioA, audioB].forEach(a => { a.autoplay = false; a.volume = state.vol/100; });
+
+let ctx=null, srcNode=null, preamp=null, eqf=[], toneB=null, toneM=null, toneT=null,
+    panner=null, comp=null, outGain=null, analyser=null, data=null;
+let hls=null, silenceTimer=null, retryTimer=null, wake=null, sleepT=null, sleepEnd=0, tickT=null;
+
+function buildGraph(){
+  if(ctx) return true;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if(!AC) return false;
+  try{
+    ctx = new AC();
+    srcNode = ctx.createMediaElementSource(audioA);
+    preamp = ctx.createGain();
+    eqf = BANDS.map((b,i)=>{
+      const f = ctx.createBiquadFilter();
+      f.type = (i===0) ? "lowshelf" : (i===BANDS.length-1 ? "highshelf" : "peaking");
+      f.frequency.value = b.f; f.Q.value = 1.0; f.gain.value = state.gains[i]||0;
+      return f;
+    });
+    toneB = ctx.createBiquadFilter(); toneB.type="lowshelf";  toneB.frequency.value=100;
+    toneM = ctx.createBiquadFilter(); toneM.type="peaking";   toneM.frequency.value=1000; toneM.Q.value=.9;
+    toneT = ctx.createBiquadFilter(); toneT.type="highshelf"; toneT.frequency.value=6000;
+    panner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+    comp = ctx.createDynamicsCompressor();
+    comp.threshold.value=-26; comp.knee.value=26; comp.ratio.value=6; comp.attack.value=.005; comp.release.value=.28;
+    outGain = ctx.createGain();
+    analyser = ctx.createAnalyser(); analyser.fftSize=512; analyser.smoothingTimeConstant=.78;
+    data = new Uint8Array(analyser.frequencyBinCount);
+    wire(); applyAudio();
+    return true;
+  }catch(e){ ctx=null; return false; }
+}
+function wire(){
+  const all=[srcNode,preamp,...eqf,toneB,toneM,toneT,comp,outGain,analyser];
+  if(panner) all.push(panner);
+  all.forEach(n=>{ try{ n.disconnect(); }catch(e){} });
+  srcNode.connect(preamp);
+  let last = preamp;
+  eqf.forEach(f=>{ last.connect(f); last=f; });
+  [toneB,toneM,toneT].forEach(f=>{ last.connect(f); last=f; });
+  if(state.norm){ last.connect(comp); last=comp; }
+  if(panner){ last.connect(panner); last=panner; }
+  last.connect(outGain);
+  outGain.connect(analyser);
+  analyser.connect(ctx.destination);
+}
+function applyAudio(){
+  if(!ctx) return;
+  eqf.forEach((f,i)=> f.gain.value = state.eqOn ? (state.gains[i]||0) : 0);
+  toneB.gain.value = state.eqOn ? state.tone.bass : 0;
+  toneM.gain.value = state.eqOn ? state.tone.mid  : 0;
+  toneT.gain.value = state.eqOn ? state.tone.treb : 0;
+  if(panner) panner.pan.value = state.tone.bal;
+  const peak = Math.max(0, ...state.gains, state.tone.bass, state.tone.mid, state.tone.treb);
+  preamp.gain.value = state.eqOn ? Math.pow(10, (-peak*0.42)/20) : 1;
+}
+
+const isHls = u => /\.m3u8(\?|$)/i.test(u);
+const activeEl = () => state.mode==="eq" ? audioA : audioB;
+
+function stopAll(){
+  clearTimeout(silenceTimer); clearTimeout(retryTimer);
+  if(hls){ try{ hls.destroy(); }catch(e){} hls=null; }
+  [audioA,audioB].forEach(a=>{ try{ a.pause(); a.removeAttribute("src"); a.load(); }catch(e){} });
+}
+
+function play(st, srcIdx, mode){
+  if(!st) return;
+  state.current = st; state.srcIdx = srcIdx||0;
+  state.mode = mode || (state.eqOn ? "eq" : "direct");
+  const url = st.src[state.srcIdx];
+  LS.set("last", st.id);
+  if(!url){ state.playing=false; setStatus("Yayına ulaşılamıyor"); render(); return; }
+
+  stopAll();
+  state.playing = true; state.elapsed = 0;
+  setStatus("Bağlantı kuruluyor…"); buffering(true); pushRecent(st.id); render();
+
+  if(state.mode==="eq" && !buildGraph()) state.mode="direct";
+  const el = activeEl();
+  el.volume = state.muted ? 0 : state.vol/100;
+
+  if(isHls(url) && window.Hls && Hls.isSupported()){
+    hls = new Hls({enableWorker:true, lowLatencyMode:false, liveSyncDurationCount:3,
+                   manifestLoadingMaxRetry:2, fragLoadingMaxRetry:3});
+    hls.loadSource(url); hls.attachMedia(el);
+    hls.on(Hls.Events.ERROR, (_e,d)=>{ if(d && d.fatal) failover(); });
+    hls.on(Hls.Events.MANIFEST_PARSED, ()=> start(el));
+  } else {
+    el.src = url;
+    el.onerror = ()=> failover();
+    start(el);
+  }
+  watchSilence(); mediaSession(st);
+}
+
+function start(el){
+  const go = ()=> el.play().then(()=>{
+    state.playing = true; setStatus("CANLI YAYIN · " + state.current.name);
+    buffering(false); startClockTimer(); loopViz(); render();
+  }).catch(err=>{
+    if(String(err && err.name)==="NotAllowedError"){
+      state.playing=false; buffering(false); setStatus("Başlatmak için oynat tuşuna dokunun"); render();
+    } else failover();
+  });
+  if(ctx && ctx.state==="suspended") ctx.resume().then(go).catch(go); else go();
+}
+
+/* CORS izni olmayan yayınlarda ekolayzer sessiz kalır → algıla, doğrudan çalmaya geç */
+function watchSilence(){
+  clearTimeout(silenceTimer);
+  if(state.mode!=="eq" || !analyser) return;
+  let n=0, loud=false;
+  const tick = ()=>{
+    if(!state.playing || state.mode!=="eq") return;
+    analyser.getByteFrequencyData(data);
+    let sum=0; for(let i=0;i<data.length;i++) sum+=data[i];
+    if(sum>240) loud=true;
+    if(++n<18 && !loud){ silenceTimer=setTimeout(tick,260); return; }
+    if(!loud && !activeEl().paused){
+      toast("Bu yayın ekolayzere izin vermiyor · doğrudan çalınıyor");
+      play(state.current, state.srcIdx, "direct");
+    }
+  };
+  silenceTimer = setTimeout(tick, 1500);
+}
+
+function failover(){
+  const st = state.current; if(!st) return;
+  if(state.mode==="eq"){ play(st, state.srcIdx, "direct"); return; }
+  if(state.srcIdx+1 < st.src.length){
+    toast("Yedek yayın adresi deneniyor…");
+    play(st, state.srcIdx+1, state.eqOn ? "eq" : "direct"); return;
+  }
+  state.playing=false; buffering(false); setStatus("Bağlantı kurulamadı · başka istasyon deneyin"); render();
+  retryTimer = setTimeout(()=>{ if(!state.playing && state.current===st) play(st,0,state.eqOn?"eq":"direct"); }, 9000);
+}
+
+[audioA,audioB].forEach(a=>{
+  a.addEventListener("waiting", ()=>{ if(state.playing){ buffering(true); setStatus("Tampon dolduruluyor…"); }});
+  a.addEventListener("playing", ()=>{ buffering(false); if(state.current) setStatus("CANLI YAYIN · "+state.current.name); });
+  a.addEventListener("canplay", ()=> buffering(false));
+  a.addEventListener("stalled", ()=>{ if(state.playing) buffering(true); });
+  a.addEventListener("ended",   ()=>{ if(state.playing) failover(); });
+});
+window.addEventListener("online", ()=>{ if(state.current && state.playing) play(state.current,0,state.eqOn?"eq":"direct"); });
+
+function toggle(){
+  if(!state.current){ play(visible()[0] || state.list[0], 0); return; }
+  if(state.playing){ state.playing=false; stopAll(); stopClockTimer(); setStatus("Duraklatıldı"); render(); }
+  else play(state.current, state.srcIdx, state.eqOn?"eq":"direct");
+}
+function stopPlay(){
+  state.playing=false; stopAll(); stopClockTimer(); state.elapsed=0;
+  setStatus("Durduruldu"); render();
+}
+function step(d){
+  const l = visible().length ? visible() : state.list;
+  const i = Math.max(0, l.findIndex(s=>state.current && s.id===state.current.id));
+  play(l[(i+d+l.length)%l.length], 0);
+}
+
+function mediaSession(st){
+  if(!("mediaSession" in navigator)) return;
+  try{
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: st.name, artist: st.sub || "", album: "OTO RADYO DSP"
+    });
+    navigator.mediaSession.setActionHandler("play", ()=> toggle());
+    navigator.mediaSession.setActionHandler("pause", ()=> toggle());
+    navigator.mediaSession.setActionHandler("previoustrack", ()=> step(-1));
+    navigator.mediaSession.setActionHandler("nexttrack", ()=> step(1));
+  }catch(e){}
+}
+
+/* ================= GÖRSELLEŞTİRME ================= */
+const viz = $("viz"), vctx = viz.getContext("2d");
+function sizeViz(){
+  const r = viz.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio||1);
+  viz.width = Math.max(240, r.width*dpr); viz.height = Math.max(90, r.height*dpr);
+}
+window.addEventListener("resize", sizeViz);
+
+let vizRaf = null;
+function loopViz(){
+  if(vizRaf) return;
+  const draw = ()=>{
+    vizRaf = requestAnimationFrame(draw);
+    const w=viz.width, h=viz.height;
+    vctx.clearRect(0,0,w,h);
+    const ac = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#00e5ff";
+    let arr=null;
+    if(analyser && state.mode==="eq" && state.playing){ analyser.getByteFrequencyData(data); arr=data; }
+    const N = 40, bw = w/N;
+    let energy = 0;
+    for(let i=0;i<N;i++){
+      let v;
+      if(arr){ v = arr[Math.floor(i*arr.length/N/1.6)]/255; }
+      else if(state.playing){ v = .18 + .34*Math.abs(Math.sin(Date.now()/(260+i*17) + i)); }
+      else { v = .04; }
+      energy += v;
+      const bh = Math.max(2, v*h*0.92);
+      const g = vctx.createLinearGradient(0,h,0,h-bh);
+      g.addColorStop(0, ac); g.addColorStop(1, "#0088ff");
+      vctx.fillStyle = g;
+      vctx.globalAlpha = .92;
+      vctx.fillRect(i*bw+bw*.16, h-bh, bw*.68, bh);
+      vctx.globalAlpha = .22;
+      vctx.fillRect(i*bw+bw*.16, h-bh-4, bw*.68, 2);
+    }
+    vctx.globalAlpha = 1;
+    pulse(energy/N);
+  };
+  draw();
+}
+let lastSpk = 0;
+function pulse(e){
+  const now = performance.now();
+  if(now-lastSpk < 55) return;
+  lastSpk = now;
+  const sc = state.playing ? (1 + Math.min(.28, e*.7)) : 1;
+  document.querySelectorAll(".woofer").forEach(g=> g.style.transform = "scale("+sc.toFixed(3)+")");
+}
+
+/* ================= ARAYÜZ ================= */
+function setAccent(c){ document.documentElement.style.setProperty("--accent", c || "#00e5ff"); }
+function setStatus(t){ $("status").textContent = "Yayın Durumu: " + t; }
+function buffering(on){ $("buffering").classList.toggle("show", !!on); }
+let toastT=null;
+function toast(msg){
+  const t=$("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"), 2600);
+}
+
+function visible(){
+  const q = state.q.trim().toLowerCase();
+  return state.list.filter(s=>{
+    if(state.filter==="fav" && !state.favs.includes(s.id)) return false;
+    if(state.filter!=="all" && state.filter!=="fav" && !(s.tags||[]).includes(state.filter)) return false;
+    if(q && !(s.name+" "+(s.sub||"")+" "+(s.cat||"")).toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function renderFilters(){
+  $("filters").innerHTML = FILTERS.map(f=>
+    `<button class="fchip${state.filter===f.k?" on":""}" data-f="${f.k}">${esc(f.n)}</button>`).join("");
+  $("filters").querySelectorAll("[data-f]").forEach(b=> b.onclick = ()=>{
+    state.filter=b.dataset.f; renderFilters(); renderList();
+  });
+}
+
+function renderList(){
+  const l = visible();
+  $("list").innerHTML = l.length ? l.map(s=>{
+    const on = state.current && state.current.id===s.id;
+    return `<div class="st${on?" on":""}" style="--sa:${esc(s.ac||"#00e5ff")}" data-id="${esc(s.id)}" role="button" tabindex="0">
+      <div class="ab">${esc(s.ab||s.name.slice(0,2).toUpperCase())}</div>
+      <div class="info">
+        <div class="nm">${esc(s.name)}</div>
+        <div class="sb">${esc(s.sub||"")}</div>
+        <div class="fq">${esc(s.freq||"--")} MHz · ${esc(s.cat||"Radyo")}</div>
+      </div>
+      <button class="fav${state.favs.includes(s.id)?" on":""}" data-fav="${esc(s.id)}" aria-label="Favori">★</button>
+      <div class="bars"><i></i><i></i><i></i></div>
+    </div>`;
+  }).join("") : `<div style="color:var(--muted);font-size:11.5px;padding:8px">Sonuç bulunamadı.</div>`;
+
+  $("list").querySelectorAll("[data-id]").forEach(el=>{
+    const id = el.dataset.id;
+    const act = ()=>{
+      if(state.assign){
+        const i = state.slots.indexOf(null);
+        const idx = state.pendingSlot!=null ? state.pendingSlot : (i>-1?i:0);
+        state.slots[idx]=id; state.pendingSlot=null; state.assign=false;
+        LS.set("slots", state.slots); $("btnAssign").classList.remove("on");
+        renderSlots(); toast("Slot "+(idx+1)+" kaydedildi"); return;
+      }
+      const st = byId(id);
+      if(state.current && state.current.id===id) toggle();
+      else play(st, 0);
+    };
+    el.onclick = e=>{ if(e.target.closest("[data-fav]")) return; act(); };
+    el.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); act(); } };
+  });
+  $("list").querySelectorAll("[data-fav]").forEach(b=> b.onclick = e=>{
+    e.stopPropagation();
+    const id=b.dataset.fav, i=state.favs.indexOf(id);
+    if(i>-1) state.favs.splice(i,1); else state.favs.push(id);
+    LS.set("favs", state.favs); renderList();
+  });
+}
+
+function renderPresets(){
+  const names = Object.keys(PRESETS).concat(Object.keys(state.userPresets));
+  $("presetRow").innerHTML = names.map(n=>
+    `<button class="pchip${state.preset===n?" on":""}" data-p="${esc(n)}">${esc(n)}${state.userPresets[n]?" ×":""}</button>`).join("");
+  $("presetRow").querySelectorAll("[data-p]").forEach(b=> b.onclick = ev=>{
+    const n=b.dataset.p;
+    if(state.userPresets[n] && (ev.offsetX > b.clientWidth-20)){
+      delete state.userPresets[n]; LS.set("userPresets", state.userPresets); renderPresets(); return;
+    }
+    state.preset=n;
+    state.gains=(PRESETS[n]||state.userPresets[n]).slice();
+    LS.set("preset",n); LS.set("gains", state.gains);
+    applyAudio(); renderPresets(); renderBands();
+  });
+}
+
+function renderBands(){
+  $("bands").innerHTML = BANDS.map((b,i)=>
+    `<div class="band">
+      <span class="db" id="db${i}">${(state.gains[i]>0?"+":"")+state.gains[i]}</span>
+      <input type="range" min="-12" max="12" step="1" value="${state.gains[i]}" data-b="${i}" aria-label="${b.l} Hz">
+      <span class="hz">${b.l}</span>
+    </div>`).join("");
+  $("bands").querySelectorAll("[data-b]").forEach(inp=> inp.oninput = ()=>{
+    const i=+inp.dataset.b, v=+inp.value;
+    state.gains[i]=v; $("db"+i).textContent=(v>0?"+":"")+v;
+    state.preset="Özel"; LS.set("gains", state.gains); applyAudio(); renderPresets();
+  });
+}
+
+function renderSlots(){
+  $("slots").innerHTML = state.slots.map((id,i)=>{
+    const s = id ? byId(id) : null;
+    const act = s && state.current && state.current.id===s.id;
+    return `<button class="qs${s?" filled":""}${act?" act":""}" data-slot="${i}">
+      <span class="n">${i+1}</span><span>${s?esc(s.name):"Boş"}</span></button>`;
+  }).join("");
+  $("slots").querySelectorAll("[data-slot]").forEach(b=> b.onclick = ()=>{
+    const i=+b.dataset.slot;
+    if(state.assign){
+      if(state.current){ state.slots[i]=state.current.id; LS.set("slots",state.slots); toast("Slot "+(i+1)+": "+state.current.name); }
+      else { state.pendingSlot=i; toast("Şimdi listeden bir radyo seçin"); return; }
+      state.assign=false; $("btnAssign").classList.remove("on"); renderSlots(); return;
+    }
+    if(state.slots[i]) play(byId(state.slots[i]), 0);
+    else toast("Boş slot · önce 'Slota Ata'ya basın");
+  });
+}
+
+function pushRecent(id){
+  const i=state.recent.indexOf(id);
+  if(i>-1) state.recent.splice(i,1);
+  state.recent.unshift(id);
+  if(state.recent.length>8) state.recent.pop();
+  LS.set("recent", state.recent); renderRecent();
+}
+function renderRecent(){
+  const items = state.recent.map(byId).filter(Boolean);
+  $("recent").innerHTML = items.length
+    ? items.map(s=>`<button class="chip" data-r="${esc(s.id)}">${esc(s.name)}</button>`).join("")
+    : `<span style="font-size:10px;color:var(--muted)">Henüz yayın dinlenmedi</span>`;
+  $("recent").querySelectorAll("[data-r]").forEach(b=> b.onclick = ()=> play(byId(b.dataset.r),0));
+}
+
+function renderDrive(){
+  const l = visible().length ? visible() : state.list;
+  $("drGrid").innerHTML = l.map(s=>{
+    const on = state.current && state.current.id===s.id;
+    return `<button class="dr-st${on?" on":""}" style="--sa:${esc(s.ac||"#00e5ff")}" data-d="${esc(s.id)}">
+      ${esc(s.name)}<span>${esc(s.freq||"--")} MHz · ${esc(s.cat||"")}</span></button>`;
+  }).join("");
+  $("drGrid").querySelectorAll("[data-d]").forEach(b=> b.onclick = ()=>{
+    const id=b.dataset.d;
+    if(state.current && state.current.id===id) toggle(); else play(byId(id),0);
+  });
+  const st=state.current;
+  $("drTitle").textContent = st ? st.name.toUpperCase() : "RADYO SEÇİN";
+  $("drSub").textContent = st ? ((st.freq||"--")+" MHz · "+(st.sub||"")) : "Hazır";
+  $("drPlay").textContent = state.playing ? "⏸" : "▶";
+}
+
+function render(){
+  const st = state.current;
+  setAccent(st ? st.ac : "#00e5ff");
+  $("npTitle").textContent = st ? st.name.toUpperCase() : "RADYO SEÇİN";
+  $("npFreq").textContent = (st ? (st.freq||"--") : "--.--") + " MHz";
+  $("npGenre").textContent = st ? (st.sub || st.cat || "") : "Hazır";
+  $("btnPlay").textContent = state.playing ? "⏸" : "▶";
+  $("mPlay").textContent = state.playing ? "⏸" : "▶";
+  $("mAb").textContent = st ? (st.ab||"--") : "--";
+  $("mName").textContent = st ? st.name : "Radyo seçin";
+  $("mSub").textContent = st ? ((st.freq||"--")+" MHz · "+(st.cat||"")) : "Hazır";
+  document.querySelectorAll(".reel").forEach(r=> r.classList.toggle("spin", state.playing));
+  $("btnEq").classList.toggle("on", state.eqOn);
+  $("btnNorm").classList.toggle("on", state.norm);
+  $("btnMute").classList.toggle("danger", state.muted);
+  $("btnMute").classList.toggle("on", state.muted);
+  $("btnMute").innerHTML = state.muted ? "🔕 SESSİZ" : "🔊 SES";
+  renderList(); renderSlots();
+  if($("drive").classList.contains("show")) renderDrive();
+  signal();
+  loopViz();
+}
+
+function signal(){
+  let level = 0;
+  if(state.playing){
+    level = 4;
+    try{
+      const el=activeEl();
+      if(el.buffered.length){
+        const ahead = el.buffered.end(el.buffered.length-1) - el.currentTime;
+        level = ahead<0.5?1 : ahead<1.5?2 : ahead<3?3 : 4;
+      }
+      if(el.readyState<3) level=Math.min(level,1);
+    }catch(e){}
+  }
+  $("sig").querySelectorAll("i").forEach((b,i)=> b.classList.toggle("on", i<level));
+}
+setInterval(signal, 1500);
+
+/* ---- ticker ---- */
+let tIdx=0;
+function tickerLines(){
+  const st=state.current||{};
+  const m=String(Math.floor(state.elapsed/60)).padStart(2,"0"), s=String(state.elapsed%60).padStart(2,"0");
+  const now=new Date().toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+  return [
+    {t:"♪ "+(st.sub||"OTO RADYO DSP")+" ♪"},
+    {t:"FREKANS "+(st.freq||"--")+" MHz · HD STEREO"},
+    {t: state.playing ? ("DİNLEME SÜRESİ "+m+":"+s) : "YAYIN DURAKLATILDI", b: !state.playing},
+    {t:"AKTİF DSP PROFİLİ: "+state.preset.toUpperCase()+(state.eqOn?"":" (KAPALI)")},
+    {t:"SES "+state.vol+"% · "+(state.mode==="eq"?"EKOLAYZER AKTİF":"DOĞRUDAN ÇALMA")},
+    {t:($("wTemp").textContent||"")+" "+($("wDesc").textContent||"")+" · SAAT "+now},
+    {t: state.playing ? "● CANLI YAYIN AKTİF" : "○ BAĞLANTI BEKLENİYOR", b: state.playing}
+  ];
+}
+setInterval(()=>{
+  const lines=tickerLines(); tIdx=(tIdx+1)%lines.length;
+  const el=$("ticker"), l=lines[tIdx];
+  el.textContent=l.t; el.className="ticker"+(l.b?" blink":"");
+}, 4200);
+
+function startClockTimer(){ stopClockTimer(); tickT=setInterval(()=>{ state.elapsed++;
+  $("elapsed").textContent = String(Math.floor(state.elapsed/60)).padStart(2,"0")+":"+String(state.elapsed%60).padStart(2,"0"); },1000); }
+function stopClockTimer(){ if(tickT) clearInterval(tickT); tickT=null; }
+
+/* ---- saat ---- */
+setInterval(()=>{
+  const d=new Date();
+  $("clkTime").textContent=d.toLocaleTimeString("tr-TR");
+  $("clkDate").textContent=d.toLocaleDateString("tr-TR");
+  $("drClock").textContent=d.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+  if(sleepEnd){
+    const left=Math.max(0,Math.round((sleepEnd-Date.now())/1000));
+    $("sleepTxt").textContent=String(Math.floor(left/60)).padStart(2,"0")+":"+String(left%60).padStart(2,"0");
+  }
+},1000);
+
+/* ---- hava durumu ---- */
+const citySelect=$("citySelect");
+CITIES.forEach(c=>{
+  const o=document.createElement("option");
+  o.value=c[1]+","+c[2]; o.textContent=c[0];
+  if(c[0]===state.city) o.selected=true;
+  citySelect.appendChild(o);
+});
+async function weather(){
+  const [lat,lon]=citySelect.value.split(",");
+  $("wIco").textContent="⏳"; $("wTemp").textContent="--°"; $("wDesc").textContent="Yükleniyor";
+  try{
+    const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude="+lat+"&longitude="+lon+"&current_weather=true");
+    const j=await r.json(), cw=j.current_weather;
+    if(!cw) throw 0;
+    const info=WCODES[cw.weathercode]||["🌡️","Bilinmiyor"];
+    $("wIco").textContent=info[0];
+    $("wTemp").textContent=Math.round(cw.temperature)+"°C";
+    $("wDesc").textContent=info[1]+" · "+Math.round(cw.windspeed)+"km/s";
+  }catch(e){ $("wIco").textContent="⚠️"; $("wDesc").textContent="Veri alınamadı"; }
+}
+citySelect.onchange=()=>{
+  state.city=citySelect.options[citySelect.selectedIndex].textContent;
+  LS.set("city", state.city); weather();
+};
+weather(); setInterval(weather, 15*60*1000);
+
+/* ================= KONTROLLER ================= */
+$("btnPlay").onclick=$("mPlay").onclick=$("drPlay").onclick=toggle;
+$("btnStop").onclick=stopPlay;
+$("btnPrev").onclick=$("mPrev").onclick=$("drPrev").onclick=()=>step(-1);
+$("btnNext").onclick=$("mNext").onclick=$("drNext").onclick=()=>step(1);
+
+function setVol(v){
+  state.vol=Math.max(0,Math.min(100,Math.round(v)));
+  LS.set("vol", state.vol);
+  $("sVol").value=state.vol; $("vVol").textContent=state.vol+"%";
+  const g = state.muted ? 0 : state.vol/100;
+  audioA.volume=g; audioB.volume=g;
+}
+$("sVol").oninput=e=>{ state.muted=false; setVol(+e.target.value); render(); };
+$("drVolUp").onclick=()=>setVol(state.vol+5);
+$("drVolDn").onclick=()=>setVol(state.vol-5);
+$("btnMute").onclick=()=>{ state.muted=!state.muted; setVol(state.vol); render(); };
+
+$("btnEq").onclick=()=>{
+  state.eqOn=!state.eqOn; LS.set("eqOn",state.eqOn); applyAudio(); render();
+  toast(state.eqOn?"Ekolayzer açık":"Ekolayzer kapalı (ham ses)");
+};
+$("btnNorm").onclick=()=>{
+  state.norm=!state.norm; LS.set("norm",state.norm);
+  if(ctx){ wire(); applyAudio(); }
+  render(); toast(state.norm?"Ses seviyesi dengeleme açık":"Dengeleme kapalı");
+};
+
+function tone(key, id, valId, fmt){
+  const inp=$(id);
+  inp.value=state.tone[key];
+  $(valId).textContent=fmt(state.tone[key]);
+  inp.oninput=()=>{
+    state.tone[key]=+inp.value; LS.set("tone",state.tone);
+    $(valId).textContent=fmt(state.tone[key]); applyAudio();
+  };
+}
+tone("bass","sBass","vBass",v=>(v>0?"+":"")+v+"dB");
+tone("mid","sMid","vMid",v=>(v>0?"+":"")+v+"dB");
+tone("treb","sTreb","vTreb",v=>(v>0?"+":"")+v+"dB");
+tone("bal","sBal","vBal",v=> v<-0.05?("L"+Math.round(-v*100)):v>0.05?("R"+Math.round(v*100)):"C");
+
+$("eqHead").onclick=()=>$("eqPanel").classList.toggle("open");
+$("btnSavePreset").onclick=()=>{
+  const n=prompt("Profil adı:","Profilim "+(Object.keys(state.userPresets).length+1));
+  if(!n) return;
+  state.userPresets[n]=state.gains.slice();
+  LS.set("userPresets", state.userPresets);
+  state.preset=n; LS.set("preset",n); renderPresets(); toast("Profil kaydedildi · silmek için × işaretine basın");
+};
+
+$("btnAssign").onclick=()=>{
+  state.assign=!state.assign; state.pendingSlot=null;
+  $("btnAssign").classList.toggle("on", state.assign);
+  toast(state.assign ? "Şimdi bir slota (veya radyoya) dokunun" : "Atama iptal");
+};
+
+$("search").oninput=e=>{ state.q=e.target.value; renderList(); };
+
+/* tema */
+function applyTheme(){
+  document.documentElement.setAttribute("data-theme", state.theme);
+  $("themeTxt").textContent = state.theme==="light" ? "Gündüz" : "Gece";
+  $("btnTheme").firstChild.nodeValue = state.theme==="light" ? "☀️ " : "🌙 ";
+}
+$("btnTheme").onclick=()=>{
+  state.theme = state.theme==="light" ? "dark" : "light";
+  LS.set("theme", state.theme); applyTheme();
+};
+
+/* sürüş modu */
+$("btnDrive").onclick=()=>{ $("drive").classList.add("show"); renderDrive(); };
+$("drExit").onclick=()=> $("drive").classList.remove("show");
+
+/* ekran açık */
+$("btnWake").onclick=async ()=>{
+  try{
+    if(wake){ await wake.release(); wake=null; $("btnWake").classList.remove("on"); toast("Ekran kilidi serbest"); return; }
+    wake = await navigator.wakeLock.request("screen");
+    wake.addEventListener("release", ()=>{ wake=null; $("btnWake").classList.remove("on"); });
+    $("btnWake").classList.add("on"); toast("Ekran açık tutuluyor");
+  }catch(e){ toast("Bu tarayıcı ekranı açık tutmayı desteklemiyor"); }
+};
+
+/* uyku zamanlayıcı */
+const SLEEPS=[15,30,45,60,90,120];
+$("sleepOpts").innerHTML = SLEEPS.map(m=>`<button class="btn" data-s="${m}">${m} dk</button>`).join("")
+  + `<button class="btn danger on" data-s="0">Kapat</button>`;
+$("sleepOpts").querySelectorAll("[data-s]").forEach(b=> b.onclick=()=>{
+  const m=+b.dataset.s;
+  clearTimeout(sleepT); sleepEnd=0;
+  if(m>0){
+    sleepEnd=Date.now()+m*60000;
+    sleepT=setTimeout(()=>{ stopPlay(); sleepEnd=0; $("sleepTxt").textContent="Zamanlayıcı"; toast("Uyku zamanlayıcı: yayın durduruldu"); }, m*60000);
+    toast(m+" dakika sonra kapanacak");
+  } else { $("sleepTxt").textContent="Zamanlayıcı"; toast("Zamanlayıcı kapatıldı"); }
+  $("modalSleep").classList.remove("show");
+});
+$("btnSleep").onclick=()=> $("modalSleep").classList.add("show");
+$("modalSleep").onclick=e=>{ if(e.target===$("modalSleep")) $("modalSleep").classList.remove("show"); };
+
+/* kendi radyonu ekle */
+$("btnAdd").onclick=()=> $("modalAdd").classList.add("show");
+$("addCancel").onclick=()=> $("modalAdd").classList.remove("show");
+$("modalAdd").onclick=e=>{ if(e.target===$("modalAdd")) $("modalAdd").classList.remove("show"); };
+$("addOk").onclick=()=>{
+  const n=$("addName").value.trim(), u=$("addUrl").value.trim(), f=$("addFreq").value.trim();
+  if(!n || !/^https?:\/\//i.test(u)){ toast("Ad ve geçerli bir yayın adresi girin"); return; }
+  const st={id:"c"+Date.now(), name:n, sub:"Benim radyom", freq:f||"--", cat:"Özel",
+            ac:"#4cc9f0", ab:n.slice(0,2).toUpperCase(), tags:["custom"], src:[u]};
+  const cs=LS.get("custom",[])||[]; cs.push(st); LS.set("custom",cs);
+  state.list.push(st);
+  $("addName").value=""; $("addUrl").value=""; $("addFreq").value="";
+  $("modalAdd").classList.remove("show");
+  state.filter="custom"; renderFilters(); renderList(); toast("Radyo eklendi");
+};
+
+/* klavye */
+document.addEventListener("keydown", e=>{
+  if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT") return;
+  if(e.code==="Space"){ e.preventDefault(); toggle(); }
+  else if(e.key==="ArrowRight") step(1);
+  else if(e.key==="ArrowLeft") step(-1);
+  else if(e.key==="ArrowUp"){ e.preventDefault(); setVol(state.vol+5); }
+  else if(e.key==="ArrowDown"){ e.preventDefault(); setVol(state.vol-5); }
+  else if(e.key>="1" && e.key<="6"){ const id=state.slots[+e.key-1]; if(id) play(byId(id),0); }
+});
+
+/* ================= BAŞLAT ================= */
+applyTheme(); sizeViz(); setVol(state.vol);
+renderFilters(); renderPresets(); renderBands(); renderRecent(); renderSlots(); render();
+const last = LS.get("last", null);
+if(last && byId(last)){ state.current = byId(last); render(); setStatus("Hazır · son dinlenen: "+state.current.name); }
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) sizeViz(); });
+setTimeout(sizeViz, 300);
+</script>
+</body>
+</html>
