@@ -13,319 +13,368 @@
   --bg-main:#07070a; --panel-bg:#15161b; --panel-2:#1b1d24; --border:#2a2c33; --border-soft:#1e2027;
   --red:#ff3344; --green:#00e676; --orange:#ff9100; --cyan:#00e5ff; --blue:#0088ff; --yellow:#ffea00;
   --txt:#ffffff; --muted:#8a8e9b; --led:#00ff66; --active-row:#2a1015;
-  --accent:#00e5ff; --focus:#ffea00;
+  --accent:#ff9100; --focus:#ffea00;
 }
 [data-theme="light"]{
   --bg-main:#c8cbd0; --panel-bg:#dbe0e6; --panel-2:#cfd5dd; --border:#a0a5ad; --border-soft:#b3b8bf;
   --txt:#000000; --muted:#4a4f57; --active-row:#e8c0c0; --led:#0a9a3c;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-*:focus-visible{outline:3px solid var(--focus)!important;outline-offset:2px!important}
-html,body{margin:0;padding:0;min-height:100%;background:
-  radial-gradient(circle at 18% -10%, rgba(0,229,255,.07), transparent 45%),
-  radial-gradient(circle at 95% 110%, rgba(0,136,255,.07), transparent 45%),
-  var(--bg-main);
+*:focus-visible{outline:2px solid var(--focus)!important;outline-offset:1px!important}
+html,body{margin:0;padding:0;height:100vh;overflow:hidden;
+  background:radial-gradient(circle at 18% -10%,rgba(255,145,0,.07),transparent 45%),
+    radial-gradient(circle at 95% 110%,rgba(0,136,255,.07),transparent 45%),
+    var(--bg-main);
   color:var(--txt);font-family:'Consolas','SF Mono','Roboto Mono',Menlo,monospace;
-  user-select:none;overscroll-behavior-y:none;transition:background .4s,color .3s}
-.app{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:8px;
-  padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) calc(120px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+  user-select:none;overscroll-behavior:none;transition:background .4s,color .3s}
 
-/* ---- panel temeli (cam efekti) ---- */
-.block,.panel,.strip,.titlebar,.dspbar,.listbar,footer{
-  background:linear-gradient(180deg,color-mix(in srgb,var(--panel-bg) 82%,transparent),color-mix(in srgb,var(--panel-2) 88%,transparent));
-  border:1px solid var(--border);border-radius:16px;
-  backdrop-filter:blur(10px) saturate(120%);-webkit-backdrop-filter:blur(10px) saturate(120%);
-  box-shadow:0 10px 30px -18px #000, inset 0 1px 0 rgba(255,255,255,.05)}
-.block::after,.dspbar::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:linear-gradient(160deg,rgba(255,255,255,.07),transparent 42%)}
-.dspbar{position:relative}
-.btn{background:var(--panel-2);border:1px solid var(--border);color:var(--txt);
-  border-radius:10px;padding:7px 12px;font:inherit;font-size:11.5px;font-weight:700;cursor:pointer;
-  letter-spacing:.4px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
-.btn:active{transform:scale(.96)}
-.btn.on{border-color:var(--accent);color:var(--accent);box-shadow:0 0 12px -2px var(--accent) inset}
-.btn.danger.on{border-color:var(--red);color:var(--red);box-shadow:0 0 12px -2px var(--red) inset}
+/* ===== APP KAPSAYICI — 4 BANTLI SABİT DÜZEN ===== */
+.app{display:flex;flex-direction:column;height:100vh;
+  padding:max(5px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right))
+    max(5px,env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left));
+  gap:4px}
 
-/* ---- üst bar ---- */
-.titlebar{display:flex;align-items:center;gap:10px;padding:8px 12px;flex-wrap:wrap}
-.brand{display:flex;flex-direction:column;line-height:1.15}
-.logo{font-size:14px;font-weight:800;letter-spacing:1.6px;color:var(--accent);
-  text-shadow:0 0 14px color-mix(in srgb,var(--accent) 60%,transparent)}
+/* ===== BANT 1: ÜST BİLGİ ===== */
+.band-h{flex:0 0 auto;min-height:48px;max-height:10vh;
+  display:flex;align-items:center;gap:8px;padding:6px 10px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--panel-bg) 88%,transparent),var(--panel-2));
+  border:1px solid var(--border);border-radius:12px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.brand{display:flex;flex-direction:column;line-height:1.1}
+.logo{font-size:13px;font-weight:800;letter-spacing:1.6px;color:var(--orange);
+  text-shadow:0 0 14px color-mix(in srgb,var(--orange) 60%,transparent)}
 .logo b{color:var(--txt)}
-.sign{font-size:9px;letter-spacing:2.2px;color:var(--muted);margin-top:2px}
-.sign b{color:var(--yellow);font-weight:800;letter-spacing:1.6px}
-.hdtag{font-size:8.5px;font-weight:900;letter-spacing:1.4px;color:#07070a;background:var(--green);
-  border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:2px}
-.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.weather,.clock{display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.28);
-  border:1px solid var(--border-soft);border-radius:10px;padding:5px 10px}
+.sign{font-size:8px;letter-spacing:2.2px;color:var(--muted);margin-top:1px}
+.sign b{color:var(--yellow);font-weight:800;letter-spacing:1.4px}
+.hdtag{font-size:7.5px;font-weight:900;letter-spacing:1.2px;color:#07070a;background:var(--green);
+  border-radius:3px;padding:1px 4px;margin-left:5px;vertical-align:1px}
+.h-right{margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.weather,.clock{display:flex;align-items:center;gap:5px;
+  background:rgba(0,0,0,.3);border:1px solid var(--border-soft);border-radius:8px;padding:3px 8px;font-size:11px}
 [data-theme="light"] .weather,[data-theme="light"] .clock{background:rgba(255,255,255,.45)}
-.weather select{background:transparent;border:none;color:var(--txt);font:inherit;font-size:11.5px;max-width:104px}
+.weather select{background:transparent;border:none;color:var(--txt);font:inherit;font-size:10.5px;max-width:88px}
 .weather select option{background:var(--panel-bg);color:var(--txt)}
-.w-ico{font-size:17px}.w-temp{font-size:14px;font-weight:800;color:var(--green)}
-.w-desc{font-size:10px;color:var(--muted);max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.w-ico{font-size:15px}.w-temp{font-size:12px;font-weight:800;color:var(--green)}
+.w-desc{font-size:9px;color:var(--muted);max-width:90px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .clock{font-variant-numeric:tabular-nums}
-#clkTime{font-size:14px;font-weight:800;color:var(--cyan)}
-#clkDate{font-size:10.5px;color:var(--orange)}
+#clkTime{font-size:12px;font-weight:800;color:var(--cyan)}
+#clkDate{font-size:9px;color:var(--orange)}
+.h-btns{display:flex;gap:4px}
+.btn{background:var(--panel-2);border:1px solid var(--border);color:var(--txt);
+  border-radius:8px;padding:4px 9px;font:inherit;font-size:10.5px;font-weight:700;cursor:pointer;
+  letter-spacing:.3px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.btn:active{transform:scale(.95)}
+.btn.on{border-color:var(--accent);color:var(--accent);box-shadow:0 0 10px -2px var(--accent) inset}
+.btn.danger.on{border-color:var(--red);color:var(--red);box-shadow:0 0 10px -2px var(--red) inset}
 
-/* ---- gösterge paneli ---- */
-.dash{display:grid;grid-template-columns:1.05fr 1.7fr .9fr;gap:8px}
-.block{padding:8px;position:relative;overflow:hidden}
-.viz-block{display:flex;flex-direction:column;gap:5px}
-#viz{width:100%;flex:1;min-height:112px;display:block;border-radius:10px;background:
-  radial-gradient(circle at 50% 120%, rgba(0,229,255,.10), transparent 60%), rgba(0,0,0,.42);
-  box-shadow:inset 0 0 22px -6px #000}
-[data-theme="light"] #viz{background:rgba(255,255,255,.5)}
-.viz-tabs{display:flex;gap:4px;justify-content:center;flex-wrap:wrap}
-.vtab{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:20px;
-  padding:3px 9px;font:inherit;font-size:9px;font-weight:800;letter-spacing:.8px;cursor:pointer}
-.vtab.on{border-color:var(--accent);color:var(--accent);box-shadow:0 0 12px -4px var(--accent)}
-.viz-tag{font-size:9px;letter-spacing:2px;color:var(--muted);text-align:center}
+/* ===== BANT 2: ORTA BÖLÜM (3 sütun) ===== */
+.band-m{flex:1;min-height:0;display:flex;gap:5px}
 
-/* ---- VU + stereo ---- */
-.vu-wrap{display:flex;align-items:center;gap:8px;margin-top:2px}
-.vu{width:64px;height:40px;flex:0 0 auto}
-.lr{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
-.lrrow{display:flex;align-items:center;gap:5px}
-.lrrow span{font-size:8.5px;font-weight:900;color:var(--muted);width:9px}
-.lrbar{flex:1;height:7px;border-radius:99px;background:rgba(0,0,0,.45);overflow:hidden;border:1px solid var(--border-soft)}
+/* --- Sol: Analizör --- */
+.col-viz{flex:0 0 33%;display:flex;flex-direction:column;gap:4px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--panel-bg) 82%,transparent),color-mix(in srgb,var(--panel-2) 88%,transparent));
+  border:1px solid var(--border);border-radius:12px;padding:6px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:relative;overflow:hidden}
+.col-viz::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(160deg,rgba(255,255,255,.06),transparent 42%)}
+.viz-wrap{flex:1;min-height:0;position:relative;border-radius:8px;overflow:hidden;
+  background:radial-gradient(circle at 50% 120%,rgba(0,136,255,.1),transparent 60%),rgba(0,0,0,.42);
+  box-shadow:inset 0 0 18px -4px #000}
+[data-theme="light"] .viz-wrap{background:rgba(255,255,255,.5)}
+#viz{width:100%;height:100%;display:block}
+.viz-tabs{display:flex;gap:3px;justify-content:center;flex-wrap:nowrap;flex:0 0 auto}
+.vtab{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:16px;
+  padding:2px 7px;font:inherit;font-size:8px;font-weight:800;letter-spacing:.6px;cursor:pointer}
+.vtab.on{border-color:var(--orange);color:var(--orange);box-shadow:0 0 10px -4px var(--orange)}
+.lr-wrap{flex:0 0 auto;display:flex;align-items:center;gap:6px;margin-top:2px}
+.vu{width:48px;height:30px;flex:0 0 auto}
+.lr-bars{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+.lrrow{display:flex;align-items:center;gap:4px}
+.lrrow span{font-size:7.5px;font-weight:900;color:var(--muted);width:8px}
+.lrbar{flex:1;height:5px;border-radius:99px;background:rgba(0,0,0,.45);overflow:hidden;border:1px solid var(--border-soft)}
 .lrbar i{display:block;height:100%;width:0%;border-radius:99px;
   background:linear-gradient(90deg,var(--green),var(--yellow) 72%,var(--red));transition:width .08s linear}
+.viz-tag{font-size:7.5px;letter-spacing:1.6px;color:var(--muted);text-align:center;margin-top:1px}
 
-.np-block{display:flex;align-items:center;gap:12px;min-height:178px}
-.speaker{width:54px;height:78px;flex:0 0 auto}
-.woofer{transform-origin:25px 45px;transition:transform .06s linear}
-.np{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;align-items:flex-start;position:relative}
-.cassette{width:52px;height:37px;opacity:.9}
-.reel{transform-origin:center;transform-box:fill-box}
-.reel.spin{animation:spin 2.4s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.np-title{font-size:32px;font-weight:900;letter-spacing:1.5px;color:var(--accent);line-height:1.1;
-  text-shadow:0 0 26px color-mix(in srgb,var(--accent) 60%,transparent);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;
+/* --- Orta: İstasyon bilgisi --- */
+.col-info{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  min-width:0;padding:8px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--panel-bg) 82%,transparent),color-mix(in srgb,var(--panel-2) 88%,transparent));
+  border:1px solid var(--border);border-radius:12px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:relative;overflow:hidden}
+.col-info::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(160deg,rgba(255,255,255,.06),transparent 42%)}
+.np-title{font-size:clamp(22px,4.5vw,38px);font-weight:900;letter-spacing:1.5px;color:var(--accent);
+  line-height:1.1;text-shadow:0 0 24px color-mix(in srgb,var(--accent) 55%,transparent);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;text-align:center;
   animation:npIn .45s ease both}
-@keyframes npIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
-.np-det{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.np-freq{font-size:17px;font-weight:900;color:#07070a;background:var(--accent);border-radius:7px;padding:3px 11px;
-  box-shadow:0 0 20px -6px var(--accent)}
-.np-genre{font-size:14px;font-weight:700;color:var(--txt);opacity:.85}
-.sig{display:flex;gap:3px;align-items:flex-end;height:16px}
-.sig i{width:4px;height:5px;background:var(--border);border-radius:1px;transition:.2s}
-.sig i:nth-child(2){height:8px}.sig i:nth-child(3){height:12px}.sig i:nth-child(4){height:16px}
-.sig i.on{background:var(--led);box-shadow:0 0 8px var(--led)}
-.ticker-wrap{height:19px;overflow:hidden;width:100%}
-.ticker{font-size:13px;font-weight:700;color:var(--green);letter-spacing:.6px;white-space:nowrap;display:inline-block;animation:slide 5s linear infinite}
+@keyframes npIn{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:none}}
+.np-det{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+.np-freq{font-size:clamp(13px,2vw,18px);font-weight:900;color:#07070a;background:var(--accent);
+  border-radius:6px;padding:3px 10px;box-shadow:0 0 18px -4px var(--accent)}
+.np-genre{font-size:clamp(11px,1.6vw,14px);font-weight:700;color:var(--txt);opacity:.8}
+.sig{display:flex;gap:2px;align-items:flex-end;height:14px}
+.sig i{width:3px;height:4px;background:var(--border);border-radius:1px;transition:.2s}
+.sig i:nth-child(2){height:7px}.sig i:nth-child(3){height:10px}.sig i:nth-child(4){height:14px}
+.sig i.on{background:var(--led);box-shadow:0 0 6px var(--led)}
+.ticker-wrap{height:17px;overflow:hidden;width:100%;text-align:center}
+.ticker{font-size:11px;font-weight:700;color:var(--green);letter-spacing:.5px;white-space:nowrap;
+  display:inline-block;animation:slide 5s linear infinite}
 .ticker.blink{animation:blink 1s steps(2) infinite;color:var(--orange)}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-6%)}}
 @keyframes blink{50%{opacity:.25}}
-.buffering{position:absolute;inset:auto 0 0 auto;display:none}
+.buffering{position:absolute;top:8px;right:8px;display:none}
 .buffering.show{display:block}
-.spin{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:rot .8s linear infinite}
+.spin{width:12px;height:12px;border:2px solid var(--border);border-top-color:var(--accent);
+  border-radius:50%;animation:rot .8s linear infinite}
 @keyframes rot{to{transform:rotate(360deg)}}
+.elapsed-mini{font-size:clamp(14px,2vw,20px);font-weight:900;color:var(--yellow);font-variant-numeric:tabular-nums;
+  letter-spacing:.8px;text-shadow:0 0 12px color-mix(in srgb,var(--yellow) 40%,transparent)}
+/* gizli kaset + hoparlör (JS referansları için) */
+.hidden-ref{display:none!important}
 
-.ctrl-block{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
-.ctrl-row{display:flex;align-items:center;gap:12px}
-/* ---- kontrol düğmeleri (Tesla dokunmatik için büyük) ---- */
-.cbtn{width:72px;height:72px;border-radius:16px;background:var(--panel-2);border:1px solid var(--border);
-  color:var(--txt);font-size:28px;cursor:pointer;display:grid;place-items:center;
+/* --- Sağ: Oynatım kontrolleri --- */
+.col-ctrl{flex:0 0 24%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--panel-bg) 82%,transparent),color-mix(in srgb,var(--panel-2) 88%,transparent));
+  border:1px solid var(--border);border-radius:12px;padding:8px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:relative;overflow:hidden}
+.col-ctrl::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(160deg,rgba(255,255,255,.06),transparent 42%)}
+.ctrl-row{display:flex;align-items:center;gap:10px}
+.cbtn{width:56px;height:56px;border-radius:14px;background:var(--panel-2);border:1px solid var(--border);
+  color:var(--txt);font-size:22px;cursor:pointer;display:grid;place-items:center;
   transition:transform .12s,box-shadow .2s;touch-action:manipulation}
 .cbtn:active{transform:scale(.90)}
-.cbtn.play{width:104px;height:104px;border-radius:26px;font-size:38px;color:#07070a;
-  background:linear-gradient(160deg,var(--accent),color-mix(in srgb,var(--accent) 45%,#0088ff));
-  border-color:transparent;box-shadow:0 8px 32px -6px var(--accent)}
-.cbtn.stop{width:72px;height:72px;border-radius:16px;font-size:28px;color:var(--red);
+.cbtn.play{width:80px;height:80px;border-radius:20px;font-size:30px;color:#07070a;
+  background:linear-gradient(160deg,var(--accent),color-mix(in srgb,var(--accent) 45%,var(--blue)));
+  border-color:transparent;box-shadow:0 6px 24px -4px var(--accent)}
+.cbtn.stop{width:56px;height:56px;border-radius:14px;font-size:22px;color:var(--red);
   background:var(--panel-2);border:1px solid var(--border);display:grid;place-items:center;cursor:pointer}
-.status{font-size:15px;font-weight:700;color:var(--txt);opacity:.8;text-align:center;line-height:1.45;max-width:320px}
-.elapsed{font-size:28px;font-weight:900;color:var(--yellow);font-variant-numeric:tabular-nums;letter-spacing:1px;
-  text-shadow:0 0 16px color-mix(in srgb,var(--yellow) 45%,transparent)}
+.status{font-size:11px;font-weight:700;color:var(--txt);opacity:.75;text-align:center;line-height:1.35;max-width:200px}
+.elapsed{font-size:clamp(18px,3vw,26px);font-weight:900;color:var(--yellow);font-variant-numeric:tabular-nums;
+  letter-spacing:1px;text-shadow:0 0 14px color-mix(in srgb,var(--yellow) 40%,transparent)}
 
-/* ---- FM kadran ---- */
-.dial-block{padding:6px 10px 8px;position:relative;overflow:hidden}
-#dial{width:100%;height:66px;display:block}
-.dial-tag{display:flex;justify-content:space-between;align-items:center;font-size:9px;letter-spacing:1.6px;color:var(--muted);margin-top:2px}
-.dial-tag b{color:var(--accent);letter-spacing:1px}
+/* ===== BANT 3: FM KADRAN ===== */
+.band-d{flex:0 0 18vh;min-height:60px;max-height:20vh;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--panel-bg) 82%,transparent),color-mix(in srgb,var(--panel-2) 88%,transparent));
+  border:1px solid var(--border);border-radius:12px;padding:4px 8px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.band-d::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(160deg,rgba(255,255,255,.05),transparent 42%)}
+#dial{width:100%;height:calc(100% - 18px);display:block}
+.dial-tag{display:flex;justify-content:space-between;align-items:center;
+  font-size:8px;letter-spacing:1.4px;color:var(--muted);margin-top:2px}
+.dial-tag b{color:var(--orange);letter-spacing:1px}
 
-/* ---- DSP bar ---- */
-.dspbar{padding:8px 12px;display:flex;flex-direction:column;gap:8px}
-.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.row .lbl{font-size:9.5px;letter-spacing:1.4px;color:var(--muted);min-width:64px}
-.pchips{display:flex;gap:6px;flex-wrap:wrap;flex:1}
-.pchip{background:var(--panel-2);border:1px solid var(--border);color:var(--txt);border-radius:20px;
-  padding:5px 12px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}
-.pchip.on{background:linear-gradient(135deg,var(--accent),#0088ff);color:#07070a;border-color:transparent}
-.tone{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.22);border:1px solid var(--border-soft);
-  border-radius:10px;padding:4px 9px}
+/* ===== BANT 4: DSP ===== */
+.band-dsp{flex:0 0 17vh;min-height:90px;max-height:19vh;
+  display:flex;flex-direction:column;gap:3px;padding:5px 10px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--panel-bg) 88%,transparent),var(--panel-2));
+  border:1px solid var(--border);border-radius:12px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.dsp-row{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.dsp-row .lbl{font-size:8px;letter-spacing:1.2px;color:var(--muted);min-width:30px;flex:0 0 auto}
+.pchips{display:flex;gap:4px;flex-wrap:nowrap;flex:1;overflow-x:auto;scrollbar-width:none}
+.pchips::-webkit-scrollbar{display:none}
+.pchip{background:var(--panel-2);border:1px solid var(--border);color:var(--txt);border-radius:16px;
+  padding:3px 9px;font:inherit;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;flex:0 0 auto}
+.pchip.on{background:linear-gradient(135deg,var(--orange),var(--blue));color:#07070a;border-color:transparent}
+.tone{display:flex;align-items:center;gap:4px;
+  background:rgba(0,0,0,.22);border:1px solid var(--border-soft);border-radius:8px;padding:2px 6px}
 [data-theme="light"] .tone{background:rgba(255,255,255,.4)}
-.tone span.t{font-size:9.5px;color:var(--muted);letter-spacing:1px}
-.tone span.v{font-size:11px;font-weight:800;color:var(--green);min-width:34px;text-align:right}
+.tone span.t{font-size:8px;color:var(--muted);letter-spacing:.8px}
+.tone span.v{font-size:9px;font-weight:800;color:var(--green);min-width:28px;text-align:right}
 input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer}
-input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:99px;background:linear-gradient(90deg,var(--accent),#0088ff)}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
-  background:#fff;border:3px solid var(--accent);margin-top:-7px}
-input[type=range]::-moz-range-track{height:5px;border-radius:99px;background:linear-gradient(90deg,var(--accent),#0088ff)}
-input[type=range]::-moz-range-thumb{width:16px;height:16px;border:3px solid var(--accent);background:#fff;border-radius:50%}
-.tone input[type=range]{width:88px;height:22px}
-.volrow{gap:12px}
-.volrow input[type=range]{flex:1;height:30px}
-.volrow input[type=range]::-webkit-slider-runnable-track{height:10px}
-.volrow input[type=range]::-webkit-slider-thumb{width:26px;height:26px;border-width:4px;margin-top:-8px}
-.volpct{font-size:13px;font-weight:800;color:var(--yellow);min-width:44px;text-align:right}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:99px;
+  background:linear-gradient(90deg,var(--orange),var(--blue))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:#fff;border:2px solid var(--orange);margin-top:-5px}
+input[type=range]::-moz-range-track{height:4px;border-radius:99px;
+  background:linear-gradient(90deg,var(--orange),var(--blue))}
+input[type=range]::-moz-range-thumb{width:12px;height:12px;border:2px solid var(--orange);background:#fff;border-radius:50%}
+.tone input[type=range]{width:68px;height:18px}
+.volrow{gap:8px}
+.volrow input[type=range]{flex:1;height:22px}
+.volrow input[type=range]::-webkit-slider-runnable-track{height:8px}
+.volrow input[type=range]::-webkit-slider-thumb{width:20px;height:20px;border-width:3px;margin-top:-6px}
+.volpct{font-size:11px;font-weight:800;color:var(--yellow);min-width:36px;text-align:right}
 
-/* ---- 10 bant EQ ---- */
+/* ===== ÇEKMECE (DRAWER) ===== */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:48;display:none}
+.drawer-overlay.show{display:block}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,72vw);
+  background:var(--panel-bg);border-left:1px solid var(--border);z-index:50;
+  transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;overscroll-behavior:contain;padding:14px;display:flex;flex-direction:column;gap:8px}
+.drawer.open{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;font-weight:800;letter-spacing:1.2px;color:var(--orange);padding-bottom:6px;
+  border-bottom:1px solid var(--border)}
+.drawer-head button{background:var(--panel-2);border:1px solid var(--border);color:var(--txt);
+  border-radius:8px;padding:4px 10px;font:inherit;font-size:14px;cursor:pointer}
+
+/* ---- liste & filtre (çekmece içinde) ---- */
+.listbar{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.fchip{background:var(--panel-2);border:1px solid var(--border);color:var(--muted);border-radius:16px;
+  padding:3px 10px;font:inherit;font-size:10px;font-weight:700;cursor:pointer}
+.fchip.on{background:linear-gradient(135deg,var(--orange),var(--blue));color:#07070a;border-color:transparent}
+.search{background:rgba(0,0,0,.28);border:1px solid var(--border);color:var(--txt);font:inherit;
+  font-size:10.5px;border-radius:8px;padding:5px 8px;min-width:100px;flex:1}
+.strip{display:flex;align-items:center;gap:5px;overflow-x:auto;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.strip .lbl{font-size:8px;letter-spacing:1.2px;color:var(--muted);flex:0 0 auto}
+.qs{flex:0 0 auto;background:var(--panel-2);border:1px dashed var(--border);color:var(--muted);
+  border-radius:6px;padding:3px 7px;font:inherit;font-size:9.5px;cursor:pointer;display:flex;gap:4px;align-items:center}
+.qs.filled{border-style:solid;color:var(--txt)}.qs.act{border-color:var(--accent);color:var(--accent)}
+.qs .n{font-size:8px;color:var(--yellow);font-weight:800}
+.chip{flex:0 0 auto;background:var(--panel-2);border:1px solid var(--border);color:var(--txt);
+  border-radius:16px;padding:3px 9px;font:inherit;font-size:9.5px;cursor:pointer}
+.stations{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px}
+.st{display:flex;align-items:center;gap:7px;padding:7px 8px;text-align:left;cursor:pointer;
+  background:linear-gradient(180deg,var(--panel-bg),var(--panel-2));border:1px solid var(--border);
+  border-radius:10px;color:var(--txt);position:relative;overflow:hidden;transition:transform .12s,border-color .2s}
+.st:hover{border-color:var(--sa)}.st:active{transform:scale(.98)}
+.st.on{border-color:var(--sa);background:var(--active-row);box-shadow:0 0 0 1px var(--sa) inset}
+.st .ab{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto;
+  font-size:11px;font-weight:900;color:#07070a;
+  background:linear-gradient(145deg,var(--sa),color-mix(in srgb,var(--sa) 45%,var(--blue)));box-shadow:0 3px 10px -4px var(--sa)}
+.st .info{min-width:0;flex:1}
+.st .nm{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st .sb{font-size:8.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st .fq{font-size:8.5px;color:var(--sa);font-weight:800;margin-top:1px}
+.st .fav{background:none;border:none;color:var(--border);font-size:12px;cursor:pointer;padding:2px 0 2px 3px}
+.st .fav.on{color:var(--yellow)}
+.st .bars{position:absolute;right:6px;bottom:5px;display:flex;gap:1.5px;align-items:flex-end;height:9px;opacity:0}
+.st.on .bars{opacity:1}
+.st .bars i{width:2.5px;background:var(--sa);border-radius:1px;animation:eqb .9s ease-in-out infinite}
+.st .bars i:nth-child(2){animation-delay:.12s}.st .bars i:nth-child(3){animation-delay:.28s}
+@keyframes eqb{0%,100%{height:3px}50%{height:9px}}
+
+/* ---- 10 bant EQ paneli (çekmece) ---- */
 .panel{overflow:hidden}
-.ph{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;font-size:11.5px;font-weight:800;letter-spacing:1px}
+.ph{display:flex;align-items:center;gap:6px;padding:7px 10px;cursor:pointer;font-size:10.5px;font-weight:800;letter-spacing:.8px}
 .ph .arw{margin-left:auto;color:var(--muted)}
 .panel.open .ph .arw{transform:rotate(180deg)}
-.pb{display:none;padding:0 12px 12px}
+.pb{display:none;padding:0 10px 8px}
 .panel.open .pb{display:block}
-.bands{display:flex;gap:4px;justify-content:space-between;background:rgba(0,0,0,.24);
-  border:1px solid var(--border-soft);border-radius:10px;padding:10px 6px}
-#eqCurve{width:100%;height:74px;display:block;border-radius:10px;margin-bottom:8px;
+#eqCurve{width:100%;height:54px;display:block;border-radius:8px;margin-bottom:6px;
   background:rgba(0,0,0,.3);border:1px solid var(--border-soft)}
 [data-theme="light"] #eqCurve{background:rgba(255,255,255,.45)}
+.bands{display:flex;gap:3px;justify-content:space-between;
+  background:rgba(0,0,0,.24);border:1px solid var(--border-soft);border-radius:8px;padding:6px 4px}
 [data-theme="light"] .bands{background:rgba(255,255,255,.4)}
-.band{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
-.band input[type=range]{writing-mode:vertical-lr;direction:rtl;-webkit-appearance:slider-vertical;width:24px;height:108px}
-.band .hz{font-size:9px;color:var(--muted);font-weight:700}
-.band .db{font-size:9px;color:var(--accent);font-weight:800;font-variant-numeric:tabular-nums}
+.band{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
+.band input[type=range]{writing-mode:vertical-lr;direction:rtl;-webkit-appearance:slider-vertical;width:20px;height:80px}
+.band .hz{font-size:8px;color:var(--muted);font-weight:700}
+.band .db{font-size:8px;color:var(--accent);font-weight:800;font-variant-numeric:tabular-nums}
 
-/* ---- şeritler ---- */
-.strip{padding:6px 12px;display:flex;align-items:center;gap:7px;overflow-x:auto;scrollbar-width:none}
-.strip::-webkit-scrollbar{display:none}
-.strip .lbl{font-size:9px;letter-spacing:1.4px;color:var(--muted);flex:0 0 auto}
-.qs{flex:0 0 auto;background:var(--panel-2);border:1px dashed var(--border);color:var(--muted);
-  border-radius:8px;padding:4px 9px;font:inherit;font-size:10.5px;cursor:pointer;display:flex;gap:5px;align-items:center}
-.qs.filled{border-style:solid;color:var(--txt)}
-.qs.act{border-color:var(--accent);color:var(--accent)}
-.qs .n{font-size:9px;color:var(--yellow);font-weight:800}
-.chip{flex:0 0 auto;background:var(--panel-2);border:1px solid var(--border);color:var(--txt);
-  border-radius:20px;padding:4px 11px;font:inherit;font-size:10.5px;cursor:pointer}
+.drawer-foot{margin-top:auto;padding-top:8px;border-top:1px dashed var(--border);
+  font-size:8.5px;color:var(--muted);line-height:1.5;text-align:center}
+.drawer-foot b{color:var(--yellow);font-weight:900;letter-spacing:1px}
+.drawer-foot i{font-style:normal;color:var(--orange)}
 
-/* ---- liste ---- */
-.listbar{padding:8px 12px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
-.fchip{background:var(--panel-2);border:1px solid var(--border);color:var(--muted);border-radius:20px;
-  padding:5px 12px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}
-.fchip.on{background:linear-gradient(135deg,var(--accent),#0088ff);color:#07070a;border-color:transparent}
-.search{background:rgba(0,0,0,.28);border:1px solid var(--border);color:var(--txt);font:inherit;
-  font-size:11.5px;border-radius:10px;padding:6px 10px;min-width:120px;flex:1}
-.stations{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:8px}
-.st{display:flex;align-items:center;gap:9px;padding:9px 10px;text-align:left;cursor:pointer;
-  background:linear-gradient(180deg,var(--panel-bg),var(--panel-2));border:1px solid var(--border);
-  border-radius:12px;color:var(--txt);position:relative;overflow:hidden;transition:transform .14s,box-shadow .2s,border-color .2s}
-.st:hover{border-color:var(--sa);box-shadow:0 8px 24px -14px var(--sa)}
-.st:active{transform:scale(.985)}
-.st.on{border-color:var(--sa);background:var(--active-row);box-shadow:0 0 0 1px var(--sa) inset}
-.st .ab{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto;
-  font-size:13px;font-weight:900;color:#07070a;
-  background:linear-gradient(145deg,var(--sa),color-mix(in srgb,var(--sa) 45%,#0088ff));
-  box-shadow:0 4px 14px -6px var(--sa), inset 0 1px 0 rgba(255,255,255,.35)}
-.st .info{min-width:0;flex:1}
-.st .nm{font-size:13.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.st .sb{font-size:9.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.st .fq{font-size:9.5px;color:var(--sa);font-weight:800;margin-top:2px}
-.st .fav{background:none;border:none;color:var(--border);font-size:14px;cursor:pointer;padding:2px 0 2px 4px}
-.st .fav.on{color:var(--yellow)}
-.st .bars{position:absolute;right:8px;bottom:7px;display:flex;gap:2px;align-items:flex-end;height:11px;opacity:0}
-.st.on .bars{opacity:1}
-.st .bars i{width:3px;background:var(--sa);border-radius:1px;animation:eqb .9s ease-in-out infinite}
-.st .bars i:nth-child(2){animation-delay:.14s}.st .bars i:nth-child(3){animation-delay:.3s}
-@keyframes eqb{0%,100%{height:3px}50%{height:11px}}
-
-footer{padding:9px 12px;font-size:9.5px;color:var(--muted);line-height:1.6}
-.fsign{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:7px;
-  padding-top:7px;border-top:1px dashed var(--border);font-size:11px;letter-spacing:1.4px}
-.fsign b{color:var(--yellow);font-weight:900;letter-spacing:1px}
-.fsign i{font-style:normal;color:var(--accent)}
-
-/* ---- mini oynatıcı ---- */
-.mini{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;align-items:center;gap:10px;
-  padding:9px 14px calc(9px + env(safe-area-inset-bottom));
-  background:color-mix(in srgb,var(--panel-bg) 92%,transparent);border-top:1px solid var(--border);
-  backdrop-filter:blur(12px)}
-.mini .ab{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;font-size:11px;
-  font-weight:900;color:#07070a;background:var(--accent);flex:0 0 auto}
-.mini .mt{min-width:0;flex:1}
-.mini .m1{font-size:13.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mini .m2{font-size:11px;color:var(--muted)}
-.mini .cbtn{width:42px;height:42px;font-size:16px}
-
-/* ---- sürüş modu ---- */
-.drive{position:fixed;inset:0;z-index:60;background:var(--bg-main);display:none;flex-direction:column;
-  gap:10px;padding:max(10px,env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom))}
-.drive.show{display:flex}
-.drive-top{display:flex;align-items:center;gap:10px}
-.dr-title{font-size:40px;font-weight:900;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;
-  text-shadow:0 0 30px color-mix(in srgb,var(--accent) 55%,transparent)}
-.dr-sub{font-size:17px;font-weight:700;color:var(--txt);opacity:.8}
-.dr-sign{font-size:10px;letter-spacing:2px;color:var(--muted);margin-top:3px}
-.dr-sign b{color:var(--yellow)}
-.dr-ctrl{display:flex;align-items:center;justify-content:center;gap:20px}
-.dr-ctrl .cbtn{width:88px;height:88px;font-size:34px;border-radius:22px}
-.dr-ctrl .cbtn.play{width:118px;height:118px;font-size:44px;border-radius:30px}
-.dr-ctrl .cbtn.stop{width:96px;height:96px;font-size:36px;border-radius:24px;color:var(--red);border-color:var(--red);box-shadow:0 0 24px rgba(255,61,0,.35)}
-.dr-grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;align-content:start}
-.dr-st{padding:16px 12px;border-radius:14px;border:2px solid var(--border);background:var(--panel-bg);
-  color:var(--txt);font:inherit;font-size:15px;font-weight:800;cursor:pointer;text-align:left;line-height:1.3}
-.dr-st span{display:block;font-size:10.5px;color:var(--muted);font-weight:700;margin-top:4px}
-.dr-st.on{border-color:var(--sa);color:var(--sa);box-shadow:0 0 22px -8px var(--sa)}
-
-.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(18px);z-index:80;
-  background:var(--panel-bg);border:1px solid var(--accent);color:var(--txt);border-radius:12px;
-  padding:9px 15px;font-size:11.5px;opacity:0;pointer-events:none;transition:.25s;max-width:90vw;text-align:center}
+/* ===== TOAST ===== */
+.toast{position:fixed;left:50%;bottom:10vh;transform:translateX(-50%) translateY(16px);z-index:80;
+  background:var(--panel-bg);border:1px solid var(--orange);color:var(--txt);border-radius:10px;
+  padding:7px 13px;font-size:10.5px;opacity:0;pointer-events:none;transition:.25s;max-width:88vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.modal{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.72);display:none;place-items:center;padding:18px}
+
+/* ===== MODALS ===== */
+.modal{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.72);display:none;place-items:center;padding:14px}
 .modal.show{display:grid}
-.mbox{background:var(--panel-bg);border:1px solid var(--border);border-radius:16px;padding:16px;width:min(420px,100%)}
-.mbox h3{margin:0 0 12px;font-size:13px;letter-spacing:1px}
+.mbox{background:var(--panel-bg);border:1px solid var(--border);border-radius:14px;padding:14px;width:min(380px,100%)}
+.mbox h3{margin:0 0 10px;font-size:12px;letter-spacing:1px}
 .mbox input{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--border);color:var(--txt);
-  font:inherit;font-size:12px;border-radius:10px;padding:9px 11px;margin-bottom:9px}
+  font:inherit;font-size:11px;border-radius:8px;padding:7px 9px;margin-bottom:7px}
 
-/* ---- tam ekran vitrin modu ---- */
-.show-mode{position:fixed;inset:0;z-index:70;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;
-  padding:24px 24px 62px;background:radial-gradient(circle at 50% 12%, color-mix(in srgb,var(--accent) 16%,transparent), transparent 60%), #05050a}
+/* ===== SÜRÜŞ MODU ===== */
+.drive{position:fixed;inset:0;z-index:60;background:var(--bg-main);display:none;flex-direction:column;
+  gap:8px;padding:max(8px,env(safe-area-inset-top)) 10px calc(10px + env(safe-area-inset-bottom))}
+.drive.show{display:flex}
+.drive-top{display:flex;align-items:center;gap:8px}
+.dr-title{font-size:36px;font-weight:900;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;
+  text-shadow:0 0 28px color-mix(in srgb,var(--accent) 55%,transparent)}
+.dr-sub{font-size:15px;font-weight:700;color:var(--txt);opacity:.8}
+.dr-sign{font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:2px}
+.dr-sign b{color:var(--yellow)}
+.dr-ctrl{display:flex;align-items:center;justify-content:center;gap:16px}
+.dr-ctrl .cbtn{width:80px;height:80px;font-size:30px;border-radius:20px}
+.dr-ctrl .cbtn.play{width:110px;height:110px;font-size:40px;border-radius:28px}
+.dr-ctrl .cbtn.stop{width:92px;height:92px;font-size:34px;border-radius:22px;color:var(--red);border-color:var(--red);box-shadow:0 0 22px rgba(255,61,0,.35)}
+.dr-grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;align-content:start}
+.dr-st{padding:14px 10px;border-radius:12px;border:2px solid var(--border);background:var(--panel-bg);
+  color:var(--txt);font:inherit;font-size:14px;font-weight:800;cursor:pointer;text-align:left;line-height:1.3}
+.dr-st span{display:block;font-size:10px;color:var(--muted);font-weight:700;margin-top:3px}
+.dr-st.on{border-color:var(--sa);color:var(--sa);box-shadow:0 0 18px -6px var(--sa)}
+
+/* ===== VİTRİN MODU ===== */
+.show-mode{position:fixed;inset:0;z-index:70;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  padding:20px 20px 50px;
+  background:radial-gradient(circle at 50% 12%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 60%),#05050a}
 .show-mode.show{display:flex}
-#showViz{width:min(760px,94vw);height:min(300px,38vh);border-radius:18px;background:rgba(0,0,0,.45);
-  border:1px solid var(--border);box-shadow:0 24px 60px -30px var(--accent)}
-.sh-title{font-size:clamp(28px,7vw,62px);font-weight:900;letter-spacing:2px;color:var(--accent);text-align:center;
-  text-shadow:0 0 42px color-mix(in srgb,var(--accent) 60%,transparent);max-width:94vw;
+#showViz{width:min(720px,92vw);height:min(280px,36vh);border-radius:16px;background:rgba(0,0,0,.45);
+  border:1px solid var(--border);box-shadow:0 20px 50px -26px var(--accent)}
+.sh-title{font-size:clamp(26px,6.5vw,58px);font-weight:900;letter-spacing:2px;color:var(--accent);text-align:center;
+  text-shadow:0 0 38px color-mix(in srgb,var(--accent) 60%,transparent);max-width:92vw;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sh-sub{font-size:clamp(14px,2.6vw,22px);font-weight:700;color:var(--txt);opacity:.8;text-align:center}
-.sh-row{display:flex;gap:18px;align-items:center;margin-top:4px}
-.show-mode .cbtn{width:80px;height:80px;border-radius:20px;font-size:30px}
-.show-mode .cbtn.play{width:112px;height:112px;border-radius:28px;font-size:42px}
-.show-mode .cbtn.stop{width:92px;height:92px;border-radius:22px;font-size:34px;color:var(--red);border-color:var(--red);box-shadow:0 0 20px rgba(255,61,0,.3)}
-.show-mode .sh-close{width:auto;height:auto}
-.sh-foot{position:absolute;bottom:18px;font-size:11px;letter-spacing:2.4px;color:var(--muted)}
+.sh-sub{font-size:clamp(13px,2.4vw,20px);font-weight:700;color:var(--txt);opacity:.8;text-align:center}
+.sh-row{display:flex;gap:14px;align-items:center;margin-top:4px}
+.show-mode .cbtn{width:72px;height:72px;border-radius:18px;font-size:26px}
+.show-mode .cbtn.play{width:100px;height:100px;border-radius:24px;font-size:38px}
+.show-mode .cbtn.stop{width:84px;height:84px;border-radius:20px;font-size:30px;color:var(--red);border-color:var(--red);box-shadow:0 0 18px rgba(255,61,0,.3)}
+.sh-foot{position:absolute;bottom:14px;font-size:10px;letter-spacing:2px;color:var(--muted)}
 .sh-foot b{color:var(--yellow)}
-.sh-close{position:absolute;top:16px;right:16px}
+.sh-close{position:absolute;top:14px;right:14px}
 
+/* ===== GİZLİ MİNİ PLAYER (JS referansları) ===== */
+.mini{display:none!important}
+
+/* ===== DUYARLI TASARIM ===== */
 @media (max-width:900px){
-  .dash{grid-template-columns:1fr}
-  .viz-block{order:2}.np-block{order:1}.ctrl-block{order:3}
+  .band-m{flex-direction:column}
+  .col-viz{flex:0 0 auto;min-height:28vh;max-height:35vh}
+  .col-info{flex:0 0 auto;min-height:14vh}
+  .col-ctrl{flex:0 0 auto;min-height:12vh}
   .w-desc{display:none}
-  .tone input[type=range]{width:72px}
-  .np-title{font-size:27px}
+  .tone input[type=range]{width:56px}
+  .drawer{width:min(360px,85vw)}
 }
-@media (max-width:420px){
-  .logo{font-size:12.5px}
-  .weather select{max-width:78px;font-size:10.5px}
-  .np-title{font-size:23px}
-  .np-freq{font-size:15px}
-  .np-genre{font-size:12.5px}
-  .ticker{font-size:12px}
-  .stations{grid-template-columns:1fr}
+@media (max-width:540px){
+  .logo{font-size:11px}
+  .weather select{max-width:68px;font-size:9.5px}
+  .np-title{font-size:20px}
+  .np-freq{font-size:12px}
+  .cbtn{width:46px;height:46px;font-size:18px;border-radius:10px}
+  .cbtn.play{width:64px;height:64px;font-size:24px;border-radius:16px}
+  .cbtn.stop{width:46px;height:46px;font-size:18px;border-radius:10px}
+  .band-d{min-height:50px}
+  .band-dsp{min-height:76px}
+  .tone input[type=range]{width:48px}
+  .pchips{gap:3px}
+  .pchip{padding:2px 7px;font-size:9px}
+  .h-right{gap:3px}
+  .h-btns .btn{padding:3px 6px;font-size:9.5px}
+  .clock{padding:2px 5px}
+  .drawer{width:92vw}
+}
+@media (orientation:portrait) and (max-width:900px){
+  .band-m{flex-direction:column}
+  .col-viz{flex:0 0 30vh}
+  .col-info{flex:0 0 14vh}
+  .col-ctrl{flex:0 0 12vh}
 }
 </style>
 </head>
 <body>
 <div class="app">
 
-  <div class="titlebar">
+  <!-- ===== BANT 1: ÜST BİLGİ ===== -->
+  <header class="band-h">
     <span class="brand">
       <span class="logo">OTO <b>RADYO</b> DSP<span class="hdtag">HD</span></span>
       <span class="sign">by <b>HALİL KILIÇ</b></span>
     </span>
-    <div class="tb-right">
+    <div class="h-right">
       <div class="weather">
         <select id="citySelect" aria-label="Şehir seç"></select>
         <span class="w-ico" id="wIco">⏳</span>
@@ -333,33 +382,39 @@ footer{padding:9px 12px;font-size:9.5px;color:var(--muted);line-height:1.6}
         <span class="w-desc" id="wDesc">Yükleniyor</span>
       </div>
       <div class="clock"><span id="clkTime">00:00:00</span><span id="clkDate">--.--.----</span></div>
-      <button class="btn" id="btnMute">🔊 SES</button>
-      <button class="btn" id="btnSleep">⏱️ <span id="sleepTxt">Zamanlayıcı</span></button>
-      <button class="btn" id="btnTheme">🌙 <span id="themeTxt">Gece</span></button>
-      <button class="btn" id="btnShow">⬜ Vitrin</button>
-      <button class="btn" id="btnDrive">🚗 Sürüş Modu</button>
+      <div class="h-btns">
+        <button class="btn" id="btnMute">🔊</button>
+        <button class="btn" id="btnSleep">⏱️ <span id="sleepTxt">Zamanlayıcı</span></button>
+        <button class="btn" id="btnTheme">🌙</button>
+        <button class="btn" id="btnShow">⬜</button>
+        <button class="btn" id="btnDrive">🚗</button>
+        <button class="btn" id="btnDrawer">☰</button>
+      </div>
     </div>
-  </div>
+  </header>
 
-  <div class="dash">
-    <div class="block viz-block">
-      <canvas id="viz"></canvas>
+  <!-- ===== BANT 2: ORTA BÖLÜM ===== -->
+  <section class="band-m">
+
+    <!-- Sol: Spektrum analizör -->
+    <div class="col-viz">
+      <div class="viz-wrap"><canvas id="viz"></canvas></div>
       <div class="viz-tabs">
         <button class="vtab on" data-v="bars">SPEKTRUM</button>
         <button class="vtab" data-v="wave">DALGA</button>
         <button class="vtab" data-v="ring">HALKA</button>
         <button class="vtab" data-v="mirror">AYNA</button>
       </div>
-      <div class="vu-wrap">
+      <div class="lr-wrap">
         <svg class="vu" viewBox="0 0 100 62" aria-hidden="true">
           <path d="M8 54 A44 44 0 0 1 92 54" fill="none" stroke="var(--border)" stroke-width="2"/>
           <path d="M63 15 A44 44 0 0 1 92 54" fill="none" stroke="var(--red)" stroke-width="2" opacity=".7"/>
-          <line id="vuNeedle" x1="50" y1="54" x2="50" y2="16" stroke="var(--accent)" stroke-width="2.4"
+          <line id="vuNeedle" x1="50" y1="54" x2="50" y2="16" stroke="var(--orange)" stroke-width="2.2"
                 stroke-linecap="round" transform="rotate(-52 50 54)" style="transition:transform .09s linear"/>
-          <circle cx="50" cy="54" r="4" fill="var(--accent)"/>
-          <text x="50" y="34" text-anchor="middle" font-size="9" fill="var(--muted)" font-family="monospace">VU</text>
+          <circle cx="50" cy="54" r="3.5" fill="var(--orange)"/>
+          <text x="50" y="34" text-anchor="middle" font-size="8" fill="var(--muted)" font-family="monospace">VU</text>
         </svg>
-        <div class="lr">
+        <div class="lr-bars">
           <div class="lrrow"><span>L</span><div class="lrbar"><i id="lvlL"></i></div></div>
           <div class="lrrow"><span>R</span><div class="lrbar"><i id="lvlR"></i></div></div>
           <div class="viz-tag" id="vizTag">SPEKTRUM ANALİZ · 10 BANT DSP</div>
@@ -367,8 +422,25 @@ footer{padding:9px 12px;font-size:9.5px;color:var(--muted);line-height:1.6}
       </div>
     </div>
 
-    <div class="block np-block">
-      <svg class="speaker" id="spkL" viewBox="0 0 50 70" aria-hidden="true">
+    <!-- Orta: İstasyon bilgisi -->
+    <div class="col-info">
+      <!-- JS referansları: gizli hoparlör + kaset -->
+      <svg class="speaker hidden-ref" id="spkL" viewBox="0 0 50 70" aria-hidden="true">
+        <rect x="2" y="2" width="46" height="66" rx="6" fill="#101014" stroke="var(--border)"/>
+        <circle cx="25" cy="18" r="8" fill="#0b0b0e" stroke="var(--accent)" stroke-width="1"/>
+        <circle cx="25" cy="18" r="3" fill="var(--accent)"/>
+        <g class="woofer">
+          <circle cx="25" cy="45" r="18" fill="#141418" stroke="var(--accent)" stroke-width="1.5"/>
+          <circle cx="25" cy="45" r="12" fill="#0d0d11" stroke="var(--border)"/>
+          <circle cx="25" cy="45" r="6" fill="var(--accent)" opacity=".85"/>
+        </g>
+      </svg>
+      <svg class="cassette hidden-ref" viewBox="0 0 48 34" aria-hidden="true">
+        <rect x="1" y="1" width="46" height="32" rx="4" fill="#101014" stroke="var(--border)"/>
+        <circle class="reel" id="reelL" cx="15" cy="17" r="7" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 3"/>
+        <circle class="reel" id="reelR" cx="33" cy="17" r="7" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 3"/>
+      </svg>
+      <svg class="speaker hidden-ref" id="spkR" viewBox="0 0 50 70" aria-hidden="true">
         <rect x="2" y="2" width="46" height="66" rx="6" fill="#101014" stroke="var(--border)"/>
         <circle cx="25" cy="18" r="8" fill="#0b0b0e" stroke="var(--accent)" stroke-width="1"/>
         <circle cx="25" cy="18" r="3" fill="var(--accent)"/>
@@ -379,77 +451,88 @@ footer{padding:9px 12px;font-size:9.5px;color:var(--muted);line-height:1.6}
         </g>
       </svg>
 
-      <div class="np">
-        <svg class="cassette" viewBox="0 0 48 34" aria-hidden="true">
-          <rect x="1" y="1" width="46" height="32" rx="4" fill="#101014" stroke="var(--border)"/>
-          <circle class="reel" id="reelL" cx="15" cy="17" r="7" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 3"/>
-          <circle class="reel" id="reelR" cx="33" cy="17" r="7" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 3"/>
-        </svg>
-        <div class="np-title" id="npTitle">RADYO SEÇİN</div>
-        <div class="np-det">
-          <span class="np-freq" id="npFreq">--.-- MHz</span>
-          <span class="np-genre" id="npGenre">Hazır</span>
-          <span class="sig" id="sig"><i></i><i></i><i></i><i></i></span>
-        </div>
-        <div class="ticker-wrap"><span class="ticker" id="ticker">BAĞLANTI BEKLENİYOR</span></div>
-        <div class="buffering" id="buffering"><div class="spin"></div></div>
+      <div class="np-title" id="npTitle">RADYO SEÇİN</div>
+      <div class="np-det">
+        <span class="np-freq" id="npFreq">--.-- MHz</span>
+        <span class="np-genre" id="npGenre">Hazır</span>
+        <span class="sig" id="sig"><i></i><i></i><i></i><i></i></span>
       </div>
-
-      <svg class="speaker" id="spkR" viewBox="0 0 50 70" aria-hidden="true">
-        <rect x="2" y="2" width="46" height="66" rx="6" fill="#101014" stroke="var(--border)"/>
-        <circle cx="25" cy="18" r="8" fill="#0b0b0e" stroke="var(--accent)" stroke-width="1"/>
-        <circle cx="25" cy="18" r="3" fill="var(--accent)"/>
-        <g class="woofer">
-          <circle cx="25" cy="45" r="18" fill="#141418" stroke="var(--accent)" stroke-width="1.5"/>
-          <circle cx="25" cy="45" r="12" fill="#0d0d11" stroke="var(--border)"/>
-          <circle cx="25" cy="45" r="6" fill="var(--accent)" opacity=".85"/>
-        </g>
-      </svg>
+      <div class="ticker-wrap"><span class="ticker" id="ticker">BAĞLANTI BEKLENİYOR</span></div>
+      <div class="elapsed-mini" id="elapsed">00:00</div>
+      <div class="buffering" id="buffering"><div class="spin"></div></div>
     </div>
 
-    <div class="block ctrl-block">
+    <!-- Sağ: Oynatım kontrolleri -->
+    <div class="col-ctrl">
       <div class="ctrl-row">
         <button class="cbtn" id="btnPrev" aria-label="Önceki">⏮</button>
         <button class="cbtn play" id="btnPlay" aria-label="Oynat">▶</button>
         <button class="cbtn stop" id="btnStop" aria-label="Durdur">⏹</button>
         <button class="cbtn" id="btnNext" aria-label="Sonraki">⏭</button>
       </div>
-      <div class="elapsed" id="elapsed">00:00</div>
       <div class="status" id="status">Yayın Durumu: Hazır</div>
     </div>
-  </div>
 
-  <div class="block dial-block">
+  </section>
+
+  <!-- ===== BANT 3: FM KADRAN ===== -->
+  <section class="band-d">
     <canvas id="dial"></canvas>
     <div class="dial-tag">
       <span>FM 87.5 – 108.0 MHz</span>
       <b id="dialNow">--.-- MHz</b>
       <span>ANALOG KADRAN</span>
     </div>
-  </div>
+  </section>
 
-  <div class="dspbar">
-    <div class="row">
-      <span class="lbl">DSP PROFİL</span>
+  <!-- ===== BANT 4: DSP KONTROL ===== -->
+  <section class="band-dsp">
+    <div class="dsp-row">
+      <span class="lbl">DSP</span>
       <div class="pchips" id="presetRow"></div>
-      <button class="btn" id="btnSavePreset">+ Kaydet</button>
+      <button class="btn" id="btnSavePreset" style="font-size:9.5px;padding:3px 7px">+ Kaydet</button>
     </div>
-    <div class="row">
+    <div class="dsp-row">
       <span class="lbl">TON</span>
       <label class="tone"><span class="t">BAS</span><input type="range" id="sBass" min="-12" max="12" step="1" value="0"><span class="v" id="vBass">0dB</span></label>
       <label class="tone"><span class="t">ORTA</span><input type="range" id="sMid" min="-12" max="12" step="1" value="0"><span class="v" id="vMid">0dB</span></label>
       <label class="tone"><span class="t">TİZ</span><input type="range" id="sTreb" min="-12" max="12" step="1" value="0"><span class="v" id="vTreb">0dB</span></label>
       <label class="tone"><span class="t">DENGE</span><input type="range" id="sBal" min="-1" max="1" step="0.1" value="0"><span class="v" id="vBal">C</span></label>
-      <button class="btn" id="btnNorm">🎚️ Normalize</button>
-      <button class="btn on" id="btnEq">🎛️ Ekolayzer</button>
+      <button class="btn" id="btnNorm">🎚️</button>
+      <button class="btn on" id="btnEq">🎛️</button>
     </div>
-    <div class="row volrow">
+    <div class="dsp-row volrow">
       <span class="lbl">SES</span>
       <input type="range" id="sVol" min="0" max="100" step="1" value="85" aria-label="Ses seviyesi">
       <span class="volpct" id="vVol">85%</span>
     </div>
-  </div>
+  </section>
 
+</div><!-- .app -->
+
+<!-- ===== ÇEKMECE: Radyo Listesi & Ayarlar ===== -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <span>📻 RADYO LİSTESİ & AYARLAR</span>
+    <button id="drawerClose">✕</button>
+  </div>
+  <div class="listbar" id="filters"></div>
+  <div class="listbar">
+    <input class="search" id="search" placeholder="Radyo ara…" aria-label="Radyo ara">
+    <button class="btn" id="btnAdd">➕ Ekle</button>
+    <button class="btn" id="btnWake">👁️ Ekran</button>
+  </div>
+  <div class="strip">
+    <span class="lbl">HIZLI</span>
+    <div id="slots" style="display:flex;gap:5px"></div>
+    <button class="btn" id="btnAssign">📌 Ata</button>
+  </div>
+  <div class="strip">
+    <span class="lbl">SON</span>
+    <div id="recent" style="display:flex;gap:5px"></div>
+  </div>
+  <div class="stations" id="list"></div>
   <div class="panel open" id="eqPanel">
     <div class="ph" id="eqHead">🎚️ 10 BANT GRAFİK EKOLAYZER <span class="arw">▾</span></div>
     <div class="pb">
@@ -457,45 +540,22 @@ footer{padding:9px 12px;font-size:9.5px;color:var(--muted);line-height:1.6}
       <div class="bands" id="bands"></div>
     </div>
   </div>
-
-  <div class="strip">
-    <span class="lbl">HIZLI</span>
-    <div id="slots" style="display:flex;gap:7px"></div>
-    <button class="btn" id="btnAssign">📌 Slota Ata</button>
+  <div class="drawer-foot">
+    ⓘ Yayın adresleri değişebilir · Yedek adresler otomatik denenir<br>
+    © 2026 <b>HALİL KILIÇ</b> · <i>OTO RADYO DSP</i>
   </div>
-
-  <div class="strip">
-    <span class="lbl">SON</span>
-    <div id="recent" style="display:flex;gap:7px"></div>
-  </div>
-
-  <div class="listbar" id="filters"></div>
-  <div class="listbar">
-    <input class="search" id="search" placeholder="Radyo ara…" aria-label="Radyo ara">
-    <button class="btn" id="btnAdd">➕ Radyo Ekle</button>
-    <button class="btn" id="btnWake">👁️ Ekran Açık</button>
-  </div>
-
-  <div class="stations" id="list"></div>
-
-  <footer>
-    ⓘ Yayın adresleri değişebilir. Bir kanal açılmazsa uygulama sırayla yedek adresleri ve doğrudan çalma modunu dener.<br>
-    Ekolayzer, yayın sunucusu izin verdiğinde devreye girer; izin vermeyen yayınlar otomatik olarak doğrudan çalınır.
-    <div class="fsign">© 2026 <b>HALİL KILIÇ</b> · <i>OTO RADYO DSP</i></div>
-  </footer>
 </div>
 
+<!-- ===== GİZLİ MİNİ PLAYER (JS bağlantıları) ===== -->
 <div class="mini">
   <div class="ab" id="mAb">--</div>
-  <div class="mt">
-    <div class="m1" id="mName">Radyo seçin</div>
-    <div class="m2" id="mSub">Hazır</div>
-  </div>
+  <div class="mt"><div class="m1" id="mName">Radyo seçin</div><div class="m2" id="mSub">Hazır</div></div>
   <button class="cbtn" id="mPrev" aria-label="Önceki">⏮</button>
   <button class="cbtn play" id="mPlay" aria-label="Oynat">▶</button>
   <button class="cbtn" id="mNext" aria-label="Sonraki">⏭</button>
 </div>
 
+<!-- ===== SÜRÜŞ MODU ===== -->
 <div class="drive" id="drive">
   <div class="drive-top">
     <div style="flex:1;min-width:0">
@@ -517,6 +577,7 @@ footer{padding:9px 12px;font-size:9.5px;color:var(--muted);line-height:1.6}
   <div class="dr-grid" id="drGrid"></div>
 </div>
 
+<!-- ===== VİTRİN MODU ===== -->
 <div class="show-mode" id="showMode">
   <button class="btn sh-close" id="shExit">✕ KAPAT</button>
   <div class="sh-title" id="shTitle">RADYO SEÇİN</div>
@@ -539,7 +600,7 @@ footer{padding:9px 12px;font-size:9.5px;color:var(--muted);line-height:1.6}
     <input id="addName" placeholder="Radyo adı">
     <input id="addFreq" placeholder="Frekans (örn. 101.50) — boş kalabilir">
     <input id="addUrl" placeholder="Yayın adresi (m3u8 / mp3 / aac)">
-    <div style="display:flex;gap:8px;justify-content:flex-end">
+    <div style="display:flex;gap:6px;justify-content:flex-end">
       <button class="btn" id="addCancel">Vazgeç</button>
       <button class="btn on" id="addOk">Ekle</button>
     </div>
@@ -549,14 +610,14 @@ footer{padding:9px 12px;font-size:9.5px;color:var(--muted);line-height:1.6}
 <div class="modal" id="modalSleep">
   <div class="mbox">
     <h3>UYKU ZAMANLAYICI</h3>
-    <div style="display:flex;gap:8px;flex-wrap:wrap" id="sleepOpts"></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap" id="sleepOpts"></div>
   </div>
 </div>
+
 <script>
 "use strict";
 
-/* ================= RADYO LİSTESİ =================
-   src[0] = çalışması doğrulanmış/birincil adres, sonrası yedekler */
+/* ================= RADYO LİSTESİ ================= */
 const STATIONS = [
   {id:"kralpop", name:"Kral Pop", sub:"Pop Müzik Hit", freq:"94.70", cat:"Pop", ac:"#ff5fa2", ab:"KP", tags:["pop"],
    src:["https://ssldyg.radyotvonline.com/smil/smil:kralpop.smil/playlist.m3u8","http://46.20.3.201/;type=mp3","https://dygmaster.radyotvonline.net/kralpop/playlist.m3u8"]},
@@ -689,7 +750,7 @@ const LS = {
 };
 
 const state = {
-  list: STATIONS.concat((LS.get("custom",[])||[]).map(c=>({...c, tags:["custom"]}))),
+  list: STATIONS.concat((LS.get("custom",[])||[]).map(c=>({...c, tags:["custom"]})) ),
   filter: "all",
   q: "",
   favs: LS.get("favs",[]) || [],
@@ -805,22 +866,19 @@ function play(st, srcIdx, mode){
   const url = st.src[state.srcIdx];
   LS.set("last", st.id);
   if(!url){ state.playing=false; setStatus("Yayına ulaşılamıyor"); render(); return; }
-
   stopAll();
   state.playing = true; state.elapsed = 0;
   setStatus("Bağlantı kuruluyor…"); buffering(true); pushRecent(st.id); render();
-
   if(state.mode==="eq" && !buildGraph()) state.mode="direct";
   const el = activeEl();
   el.volume = state.muted ? 0 : state.vol/100;
-
   if(isHls(url) && window.Hls && Hls.isSupported()){
     hls = new Hls({enableWorker:true, lowLatencyMode:false,
-                   liveSyncDurationCount:4, liveMaxLatencyDurationCount:10,
-                   maxBufferLength:36, maxMaxBufferLength:90, backBufferLength:12,
-                   maxBufferSize:36*1000*1000, highBufferWatchdogPeriod:3,
-                   nudgeMaxRetry:8, fragLoadingMaxRetry:6, manifestLoadingMaxRetry:3,
-                   levelLoadingMaxRetry:4, startLevel:-1, abrEwmaDefaultEstimate:900000});
+      liveSyncDurationCount:4, liveMaxLatencyDurationCount:10,
+      maxBufferLength:36, maxMaxBufferLength:90, backBufferLength:12,
+      maxBufferSize:36*1000*1000, highBufferWatchdogPeriod:3,
+      nudgeMaxRetry:8, fragLoadingMaxRetry:6, manifestLoadingMaxRetry:3,
+      levelLoadingMaxRetry:4, startLevel:-1, abrEwmaDefaultEstimate:900000});
     hls.loadSource(url); hls.attachMedia(el);
     hls.on(Hls.Events.ERROR, (_e,d)=>{ if(d && d.fatal) failover(); });
     hls.on(Hls.Events.MANIFEST_PARSED, ()=> start(el));
@@ -844,7 +902,6 @@ function start(el){
   if(ctx && ctx.state==="suspended") ctx.resume().then(go).catch(go); else go();
 }
 
-/* CORS izni olmayan yayınlarda ekolayzer sessiz kalır → algıla, doğrudan çalmaya geç */
 function watchSilence(){
   clearTimeout(silenceTimer);
   if(state.mode!=="eq" || !analyser) return;
@@ -904,30 +961,23 @@ function mediaSession(st){
     navigator.mediaSession.metadata = new MediaMetadata({
       title: st.name, artist: st.sub || "", album: "OTO RADYO DSP"
     });
-    /* Tesla direksiyon tuşları: oynat/duraklat/stop/ileri/geri */
     navigator.mediaSession.setActionHandler("play",        ()=>{ if(!state.playing) toggle(); });
     navigator.mediaSession.setActionHandler("pause",       ()=>{ if(state.playing) toggle(); });
     navigator.mediaSession.setActionHandler("stop",        ()=> stopPlay());
     navigator.mediaSession.setActionHandler("previoustrack", ()=> step(-1));
     navigator.mediaSession.setActionHandler("nexttrack",     ()=> step(1));
-    /* oynatma durumunu bildir — Tesla ekranı bunu okur */
     navigator.mediaSession.playbackState = "playing";
     if("setPositionState" in navigator.mediaSession){
-      try{ navigator.mediaSession.setPositionState({
-        duration:Infinity, playbackRate:1, position:0
-      }); }catch(e){}
+      try{ navigator.mediaSession.setPositionState({duration:Infinity, playbackRate:1, position:0}); }catch(e){}
     }
   }catch(e){}
 }
-/* duraklatıldı/durduruldu bildir */
 function msPaused(){
   if(!("mediaSession" in navigator)) return;
   try{ navigator.mediaSession.playbackState = "paused"; }catch(e){}
 }
-/* ses değiştiğinde bildir */
 function msVol(){
   if(!("mediaSession" in navigator)) return;
-  /* MediaSession kendi ses kontrolü yok ama durumu taze tut */
   try{ if(state.playing) navigator.mediaSession.playbackState = "playing"; }catch(e){}
 }
 
@@ -938,13 +988,13 @@ state.vizMode = LS.get("vizMode", "bars");
 
 function sizeOne(c){
   const r = c.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio||1);
-  c.width = Math.max(240, r.width*dpr); c.height = Math.max(80, r.height*dpr);
+  c.width = Math.max(180, r.width*dpr); c.height = Math.max(40, r.height*dpr);
 }
 function sizeViz(){ sizeOne(viz); if(showViz.getBoundingClientRect().width) sizeOne(showViz); sizeDial(); drawEqCurve(); }
 window.addEventListener("resize", sizeViz);
 
 function accent(){
-  return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#00e5ff";
+  return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#ff9100";
 }
 function rms(buf){
   let s=0; for(let i=0;i<buf.length;i++){ const v=(buf[i]-128)/128; s+=v*v; }
@@ -968,15 +1018,15 @@ function loopViz(){
 }
 
 function paint(c, cv, freq, tw, mode){
-  const w=cv.width, h=cv.height, ac=accent();
+  const w=cv.width, h=cv.height;
   c.clearRect(0,0,w,h);
   let energy=0;
 
   if(mode==="wave"){
-    c.lineWidth = Math.max(1.6, w/420);
-    c.strokeStyle = ac; c.shadowColor = ac; c.shadowBlur = 14;
+    c.lineWidth = Math.max(1.4, w/420);
+    c.strokeStyle = accent(); c.shadowColor = accent(); c.shadowBlur = 12;
     c.beginPath();
-    const N = 220;
+    const N = 200;
     for(let i=0;i<N;i++){
       let v;
       if(tw){ v = (tw[Math.floor(i*tw.length/N)]-128)/128; }
@@ -985,12 +1035,12 @@ function paint(c, cv, freq, tw, mode){
       const x = i*w/(N-1), y = h/2 - v*h*0.42;
       i ? c.lineTo(x,y) : c.moveTo(x,y);
     }
-    c.stroke(); c.shadowBlur = 0;
+    c.stroke(); c.shadowBlur=0;
     return Math.min(1, energy/N*2.4);
   }
 
   if(mode==="ring"){
-    const cx=w/2, cy=h/2, r0=Math.min(w,h)*0.19, N=88;
+    const cx=w/2, cy=h/2, r0=Math.min(w,h)*0.19, N=72;
     c.strokeStyle="rgba(255,255,255,.08)"; c.lineWidth=1;
     c.beginPath(); c.arc(cx,cy,r0,0,Math.PI*2); c.stroke();
     for(let i=0;i<N;i++){
@@ -999,9 +1049,9 @@ function paint(c, cv, freq, tw, mode){
       else { v = state.playing ? .16+.26*Math.abs(Math.sin(Date.now()/300+i/5)) : .03; }
       energy += v;
       const a = (i/N)*Math.PI*2 - Math.PI/2, len = r0 + v*Math.min(w,h)*0.3;
-      c.strokeStyle = i%8===0 ? "#0088ff" : ac;
+      c.strokeStyle = i%8===0 ? "#0088ff" : accent();
       c.globalAlpha = .35 + v*.65;
-      c.lineWidth = Math.max(1.4, Math.min(w,h)/90);
+      c.lineWidth = Math.max(1.2, Math.min(w,h)/90);
       c.beginPath();
       c.moveTo(cx+Math.cos(a)*r0, cy+Math.sin(a)*r0);
       c.lineTo(cx+Math.cos(a)*len, cy+Math.sin(a)*len);
@@ -1011,8 +1061,9 @@ function paint(c, cv, freq, tw, mode){
     return energy/N;
   }
 
+  /* --- BAR / MIRROR modları: 30 çubuk, mavi→turuncu gradyan, yuvarlatılmış üst --- */
   const mirror = (mode==="mirror");
-  const N = mirror ? 56 : 48, bw = w/N;
+  const N = mirror ? 40 : 30, bw = w/N;
   for(let i=0;i<N;i++){
     let v;
     if(freq){ v = freq[Math.floor(Math.pow(i/N,1.42)*freq.length*0.72)]/255; }
@@ -1020,20 +1071,33 @@ function paint(c, cv, freq, tw, mode){
     else { v = .035; }
     energy += v;
     const bx = i*bw+bw*.16, bwid = bw*.68;
+    const bh = Math.max(2, v*h*0.92);
+    const rad = Math.min(bwid/2, 4);
+
+    /* gradyan: alt → mavi, üst → turuncu (referans görsele uygun) */
+    let g;
     if(mirror){
-      const bh = Math.max(2, v*h*0.46);
-      const g = c.createLinearGradient(0,h/2-bh,0,h/2+bh);
-      g.addColorStop(0,"#0088ff"); g.addColorStop(.5,ac); g.addColorStop(1,"#0088ff");
+      const mbh = Math.max(2, v*h*0.46);
+      g = c.createLinearGradient(0,h/2-mbh,0,h/2+mbh);
+      g.addColorStop(0,"#0088ff"); g.addColorStop(.5,"#ff9100"); g.addColorStop(1,"#0088ff");
       c.fillStyle=g; c.globalAlpha=.94;
-      c.fillRect(bx, h/2-bh, bwid, bh*2);
+      c.beginPath();
+      c.roundRect(bx, h/2-mbh, bwid, mbh*2, [rad,rad,0,0]);
+      c.fill();
     } else {
-      const bh = Math.max(2, v*h*0.92);
-      const g = c.createLinearGradient(0,h,0,h-bh);
-      g.addColorStop(0, ac); g.addColorStop(1, "#0088ff");
+      g = c.createLinearGradient(0,h,0,h-bh);
+      g.addColorStop(0,"#0088ff"); g.addColorStop(1,"#ff9100");
       c.fillStyle=g; c.globalAlpha=.92;
-      c.fillRect(bx, h-bh, bwid, bh);
+      /* glow */
+      c.shadowColor="#ff9100"; c.shadowBlur=6;
+      c.beginPath();
+      c.roundRect(bx, h-bh, bwid, bh, [rad,rad,0,0]);
+      c.fill();
+      c.shadowBlur=0;
+      /* üst highlight çizgisi */
       c.globalAlpha=.22;
-      c.fillRect(bx, h-bh-4, bwid, 2);
+      c.fillStyle="#fff";
+      c.fillRect(bx, h-bh-2, bwid, 2);
     }
   }
   c.globalAlpha=1;
@@ -1080,7 +1144,7 @@ function pulse(e){
 const dial = $("dial"), dctx = dial.getContext("2d");
 function sizeDial(){
   const r = dial.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio||1);
-  dial.width = Math.max(300, r.width*dpr); dial.height = Math.max(60, r.height*dpr);
+  dial.width = Math.max(300, r.width*dpr); dial.height = Math.max(50, r.height*dpr);
   drawDial();
 }
 function drawDial(){
@@ -1125,7 +1189,7 @@ function drawEqCurve(){
   const g=c.getContext("2d"), w=c.width, h=c.height, ac=accent();
   g.clearRect(0,0,w,h);
   g.strokeStyle="rgba(255,255,255,.10)"; g.lineWidth=1;
-  [0.25,0.5,0.75].forEach(p=>{ g.beginPath(); g.moveTo(0,h*p); g.lineTo(w,h*p); g.stroke(); });
+  [.25,.5,.75].forEach(p=>{ g.beginPath(); g.moveTo(0,h*p); g.lineTo(w,h*p); g.stroke(); });
   const pts = state.gains.map((v,i)=>({x:(i/(state.gains.length-1))*w, y:h/2 - (state.eqOn? v:0)/14*h*0.42}));
   g.beginPath(); g.moveTo(0, pts[0].y);
   for(let i=0;i<pts.length-1;i++){
@@ -1134,15 +1198,15 @@ function drawEqCurve(){
   }
   g.lineTo(w, pts[pts.length-1].y);
   const fill=g.createLinearGradient(0,0,0,h);
-  fill.addColorStop(0, "rgba(0,229,255,.28)"); fill.addColorStop(1,"rgba(0,229,255,0)");
-  g.strokeStyle=ac; g.lineWidth=Math.max(1.8,w/420); g.shadowColor=ac; g.shadowBlur=10; g.stroke(); g.shadowBlur=0;
+  fill.addColorStop(0,"rgba(255,145,0,.28)"); fill.addColorStop(1,"rgba(255,145,0,0)");
+  g.strokeStyle=ac; g.lineWidth=Math.max(1.6,w/420); g.shadowColor=ac; g.shadowBlur=8; g.stroke(); g.shadowBlur=0;
   g.lineTo(w,h); g.lineTo(0,h); g.closePath(); g.fillStyle=fill; g.fill();
   pts.forEach(p=>{ g.fillStyle=ac; g.beginPath(); g.arc(p.x,p.y,Math.max(2,w/300),0,Math.PI*2); g.fill(); });
 }
 
 /* ================= ARAYÜZ ================= */
-function setAccent(c){ document.documentElement.style.setProperty("--accent", c || "#00e5ff"); }
-function setStatus(t){ $("status").textContent = "Yayın Durumu: " + t; }
+function setAccent(c){ document.documentElement.style.setProperty("--accent", c || "#ff9100"); }
+function setStatus(t){ $("status").textContent = t; }
 function buffering(on){ $("buffering").classList.toggle("show", !!on); }
 let toastT=null;
 function toast(msg){
@@ -1162,7 +1226,7 @@ function visible(){
 
 function renderFilters(){
   $("filters").innerHTML = FILTERS.map(f=>
-    `<button class="fchip${state.filter===f.k?" on":""}" data-f="${f.k}">${esc(f.n)}</button>`).join("");
+    `<button class="fchip${state.filter===f.k?" on":""}" data-f="${esc(f.k)}">${esc(f.n)}</button>`).join("");
   $("filters").querySelectorAll("[data-f]").forEach(b=> b.onclick = ()=>{
     state.filter=b.dataset.f; renderFilters(); renderList();
   });
@@ -1172,7 +1236,7 @@ function renderList(){
   const l = visible();
   $("list").innerHTML = l.length ? l.map(s=>{
     const on = state.current && state.current.id===s.id;
-    return `<div class="st${on?" on":""}" style="--sa:${esc(s.ac||"#00e5ff")}" data-id="${esc(s.id)}" role="button" tabindex="0">
+    return `<div class="st${on?" on":""}" style="--sa:${esc(s.ac||"#ff9100")}" data-id="${esc(s.id)}" role="button" tabindex="0">
       <div class="ab">${esc(s.ab||s.name.slice(0,2).toUpperCase())}</div>
       <div class="info">
         <div class="nm">${esc(s.name)}</div>
@@ -1182,7 +1246,7 @@ function renderList(){
       <button class="fav${state.favs.includes(s.id)?" on":""}" data-fav="${esc(s.id)}" aria-label="Favori">★</button>
       <div class="bars"><i></i><i></i><i></i></div>
     </div>`;
-  }).join("") : `<div style="color:var(--muted);font-size:11.5px;padding:8px">Sonuç bulunamadı.</div>`;
+  }).join("") : `<div style="color:var(--muted);font-size:10px;padding:6px">Sonuç bulunamadı.</div>`;
 
   $("list").querySelectorAll("[data-id]").forEach(el=>{
     const id = el.dataset.id;
@@ -1269,7 +1333,7 @@ function renderRecent(){
   const items = state.recent.map(byId).filter(Boolean);
   $("recent").innerHTML = items.length
     ? items.map(s=>`<button class="chip" data-r="${esc(s.id)}">${esc(s.name)}</button>`).join("")
-    : `<span style="font-size:10px;color:var(--muted)">Henüz yayın dinlenmedi</span>`;
+    : `<span style="font-size:9px;color:var(--muted)">Henüz yayın dinlenmedi</span>`;
   $("recent").querySelectorAll("[data-r]").forEach(b=> b.onclick = ()=> play(byId(b.dataset.r),0));
 }
 
@@ -1277,7 +1341,7 @@ function renderDrive(){
   const l = visible().length ? visible() : state.list;
   $("drGrid").innerHTML = l.map(s=>{
     const on = state.current && state.current.id===s.id;
-    return `<button class="dr-st${on?" on":""}" style="--sa:${esc(s.ac||"#00e5ff")}" data-d="${esc(s.id)}">
+    return `<button class="dr-st${on?" on":""}" style="--sa:${esc(s.ac||"#ff9100")}" data-d="${esc(s.id)}">
       ${esc(s.name)}<span>${esc(s.freq||"--")} MHz · ${esc(s.cat||"")}</span></button>`;
   }).join("");
   $("drGrid").querySelectorAll("[data-d]").forEach(b=> b.onclick = ()=>{
@@ -1292,7 +1356,7 @@ function renderDrive(){
 
 function render(){
   const st = state.current;
-  setAccent(st ? st.ac : "#00e5ff");
+  setAccent(st ? st.ac : "#ff9100");
   $("npTitle").textContent = st ? st.name.toUpperCase() : "RADYO SEÇİN";
   $("npFreq").textContent = (st ? (st.freq||"--") : "--.--") + " MHz";
   $("npGenre").textContent = st ? (st.sub || st.cat || "") : "Hazır";
@@ -1306,7 +1370,7 @@ function render(){
   $("btnNorm").classList.toggle("on", state.norm);
   $("btnMute").classList.toggle("danger", state.muted);
   $("btnMute").classList.toggle("on", state.muted);
-  $("btnMute").innerHTML = state.muted ? "🔕 SESSİZ" : "🔊 SES";
+  $("btnMute").innerHTML = state.muted ? "🔕" : "🔊";
   renderList(); renderSlots();
   if($("drive").classList.contains("show")) renderDrive();
   drawDial();
@@ -1458,7 +1522,7 @@ $("btnSavePreset").onclick=()=>{
   if(!n) return;
   state.userPresets[n]=state.gains.slice();
   LS.set("userPresets", state.userPresets);
-  state.preset=n; LS.set("preset",n); renderPresets(); toast("Profil kaydedildi · silmek için × işaretine basın");
+  state.preset=n; LS.set("preset",n); renderPresets(); toast("Profil kaydedildi");
 };
 
 $("btnAssign").onclick=()=>{
@@ -1472,8 +1536,8 @@ $("search").oninput=e=>{ state.q=e.target.value; renderList(); };
 /* tema */
 function applyTheme(){
   document.documentElement.setAttribute("data-theme", state.theme);
-  $("themeTxt").textContent = state.theme==="light" ? "Gündüz" : "Gece";
-  $("btnTheme").firstChild.nodeValue = state.theme==="light" ? "☀️ " : "🌙 ";
+  const tb=$("btnTheme");
+  if(tb){ tb.textContent = state.theme==="light" ? "☀️" : "🌙"; }
 }
 $("btnTheme").onclick=()=>{
   state.theme = state.theme==="light" ? "dark" : "light";
@@ -1494,6 +1558,13 @@ $("shPlay").onclick=()=> toggle();
 $("shStop").onclick=stopPlay;
 $("shPrev").onclick=()=> step(-1);
 $("shNext").onclick=()=> step(1);
+
+/* çekmece (drawer) */
+function openDrawer(){ $("drawer").classList.add("open"); $("drawerOverlay").classList.add("show"); }
+function closeDrawer(){ $("drawer").classList.remove("open"); $("drawerOverlay").classList.remove("show"); }
+$("btnDrawer").onclick = openDrawer;
+$("drawerClose").onclick = closeDrawer;
+$("drawerOverlay").onclick = closeDrawer;
 
 /* görünüm sekmeleri */
 document.querySelectorAll(".vtab").forEach(b=> b.onclick=()=>{
@@ -1565,14 +1636,12 @@ $("addOk").onclick=()=>{
 /* klavye */
 document.addEventListener("keydown", e=>{
   if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT") return;
-  /* fiziksel medya tuşları – yedek */
   if(e.key==="MediaPlayPause"){ e.preventDefault(); toggle(); }
   else if(e.key==="MediaTrackNext"){ e.preventDefault(); step(1); }
   else if(e.key==="MediaTrackPrevious"){ e.preventDefault(); step(-1); }
   else if(e.key==="MediaStop"){ e.preventDefault(); stopPlay(); }
-  /* genel kısayollar */
   else if(e.code==="Space"){ e.preventDefault(); toggle(); }
-  else if(e.key==="Escape"){ $("showMode").classList.remove("show"); $("drive").classList.remove("show"); }
+  else if(e.key==="Escape"){ closeDrawer(); $("showMode").classList.remove("show"); $("drive").classList.remove("show"); }
   else if(e.key==="ArrowRight") step(1);
   else if(e.key==="ArrowLeft") step(-1);
   else if(e.key==="ArrowUp"){ e.preventDefault(); setVol(state.vol+5); }
