@@ -35,34 +35,35 @@ html,body{margin:0;padding:0;height:100vh;overflow:hidden;
   gap:4px}
 
 /* ===== BANT 1: ÜST BİLGİ ===== */
-.band-h{flex:0 0 auto;min-height:76px;max-height:13vh;
-  display:flex;align-items:center;gap:12px;padding:10px 16px;
+.band-h{flex:0 0 auto;min-height:48px;max-height:10vh;
+  display:flex;align-items:center;gap:8px;padding:6px 10px;
   background:linear-gradient(180deg,color-mix(in srgb,var(--panel-bg) 88%,transparent),var(--panel-2));
-  border:1px solid var(--border);border-radius:14px;
+  border:1px solid var(--border);border-radius:12px;
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.brand{display:flex;flex-direction:column;line-height:1.15}
-.logo{font-size:19px;font-weight:800;letter-spacing:1.8px;color:var(--orange);
+.brand{display:flex;flex-direction:column;line-height:1.1}
+.logo{font-size:13px;font-weight:800;letter-spacing:1.6px;color:var(--orange);
   text-shadow:0 0 14px color-mix(in srgb,var(--orange) 60%,transparent)}
 .logo b{color:var(--txt)}
-.sign{font-size:11px;letter-spacing:2.4px;color:var(--muted);margin-top:2px}
+.sign{font-size:8px;letter-spacing:2.2px;color:var(--muted);margin-top:1px}
 .sign b{color:var(--yellow);font-weight:800;letter-spacing:1.4px}
-.hdtag{font-size:10px;font-weight:900;letter-spacing:1.2px;color:#07070a;background:var(--green);
-  border-radius:4px;padding:2px 6px;margin-left:6px;vertical-align:1px}
-.h-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:nowrap}
-.weather,.clock{display:flex;align-items:center;gap:7px;
-  background:rgba(0,0,0,.3);border:1px solid var(--border-soft);border-radius:10px;padding:7px 14px;font-size:15px}
+.hdtag{font-size:7.5px;font-weight:900;letter-spacing:1.2px;color:#07070a;background:var(--green);
+  border-radius:3px;padding:1px 4px;margin-left:5px;vertical-align:1px}
+.h-right{margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.weather,.clock{display:flex;align-items:center;gap:5px;
+  background:rgba(0,0,0,.3);border:1px solid var(--border-soft);border-radius:8px;padding:3px 8px;font-size:11px}
 [data-theme="light"] .weather,[data-theme="light"] .clock{background:rgba(255,255,255,.45)}
-.weather select{background:transparent;border:none;color:var(--txt);font:inherit;font-size:14px;max-width:120px}
+.weather select{background:transparent;border:none;color:var(--txt);font:inherit;font-size:10.5px;max-width:88px}
 .weather select option{background:var(--panel-bg);color:var(--txt)}
-.w-ico{font-size:22px}.w-temp{font-size:17px;font-weight:800;color:var(--green)}
-.w-desc{font-size:13px;color:var(--muted);max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.w-ico{font-size:15px}.w-temp{font-size:12px;font-weight:800;color:var(--green)}
+.w-desc{font-size:9px;color:var(--muted);max-width:90px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .clock{font-variant-numeric:tabular-nums}
-#clkTime{font-size:19px;font-weight:800;color:var(--cyan)}
-#clkDate{font-size:13px;color:var(--orange)}
-.h-btns{display:flex;gap:8px}
+#clkTime{font-size:14px;font-weight:800;color:var(--cyan)}
+#clkDate{font-size:10.5px;color:var(--orange)}
+.h-btns{display:flex;gap:5px}
 .btn{background:var(--panel-2);border:1px solid var(--border);color:var(--txt);
-  border-radius:10px;padding:9px 16px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;
-  letter-spacing:.3px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+  border-radius:8px;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;
+  letter-spacing:.3px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;
+  min-height:36px}
 .btn:active{transform:scale(.95)}
 .btn.on{border-color:var(--accent);color:var(--accent);box-shadow:0 0 10px -2px var(--accent) inset}
 .btn.danger.on{border-color:var(--red);color:var(--red);box-shadow:0 0 10px -2px var(--red) inset}
@@ -301,6 +302,12 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border:2px solid var(
 .dr-ctrl .cbtn{width:80px;height:80px;font-size:30px;border-radius:20px}
 .dr-ctrl .cbtn.play{width:110px;height:110px;font-size:40px;border-radius:28px}
 .dr-ctrl .cbtn.stop{width:92px;height:92px;font-size:34px;border-radius:22px;color:var(--red);border-color:var(--red);box-shadow:0 0 22px rgba(255,61,0,.35)}
+.dr-vol-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:6px 16px}
+.dr-vol-lbl{font-size:13px;font-weight:800;color:var(--muted);letter-spacing:1.2px}
+.dr-vol-track{flex:0 0 280px;height:18px;border-radius:99px;background:rgba(0,0,0,.45);border:1px solid var(--border-soft);overflow:hidden;position:relative}
+.dr-vol-fill{height:100%;border-radius:99px;transition:width .12s linear;
+  background:linear-gradient(90deg,var(--green),var(--yellow) 65%,var(--orange) 90%,var(--red));box-shadow:0 0 12px -2px var(--green)}
+.dr-vol-pct{font-size:16px;font-weight:900;color:var(--yellow);min-width:48px;text-align:right;font-variant-numeric:tabular-nums}
 .dr-grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;align-content:start}
 .dr-st{padding:14px 10px;border-radius:12px;border:2px solid var(--border);background:var(--panel-bg);
   color:var(--txt);font:inherit;font-size:14px;font-weight:800;cursor:pointer;text-align:left;line-height:1.3}
@@ -353,7 +360,7 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border:2px solid var(
   .pchips{gap:3px}
   .pchip{padding:2px 7px;font-size:9px}
   .h-right{gap:3px}
-  .h-btns .btn{padding:3px 6px;font-size:9.5px}
+  .h-btns .btn{padding:4px 8px;font-size:10.5px}
   .clock{padding:2px 5px}
   .drawer{width:92vw}
 }
@@ -574,6 +581,11 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border:2px solid var(
     <button class="cbtn" id="drVolDn">🔉</button>
     <button class="cbtn" id="drVolUp">🔊</button>
   </div>
+  <div class="dr-vol-bar">
+    <span class="dr-vol-lbl">SES</span>
+    <div class="dr-vol-track"><div class="dr-vol-fill" id="drVolFill" style="width:85%"></div></div>
+    <span class="dr-vol-pct" id="drVolPct">85%</span>
+  </div>
   <div class="dr-grid" id="drGrid"></div>
 </div>
 
@@ -634,7 +646,7 @@ const STATIONS = [
   {id:"powerfm", name:"Power FM", sub:"Yabancı Hit Pop", freq:"100.00", cat:"Pop", ac:"#22c1c3", ab:"PW", tags:["pop"],
    src:["https://listen.powerapp.com.tr/powerfm/mpeg/icecast.audio"]},
   {id:"palfm", name:"Pal FM", sub:"Müziğin Türkçesi", freq:"106.60", cat:"Pop", ac:"#ffb703", ab:"PL", tags:["pop","slow"],
-   src:["https://moondigitalmaster.radyotvonline.net/palfm/playlist.m3u8","https://ssl4.radyotvonline.net/radyohome/palfmhome.stream_aac/playlist.m3u8"]},
+   src:["https://moondigitalmaster.radyotvonline.net/palfm/playlist.m3u8","https://ssl4.radyotvonline.com/radyohome/palfmhome.stream_aac/playlist.m3u8"]},
   {id:"risalet", name:"Risalet Radyo", sub:"Diyanet · Siyer & Sohbet", freq:"90.10", cat:"Din", ac:"#34d399", ab:"RR", tags:["manevi"],
    src:["https://eustr73.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c1520b2626.smil/playlist.m3u8","https://eustr76.mediatriple.net/videoonlylive/mtikoimxnztxlive/broadcast_5e3c1520b2626.smil/playlist.m3u8"]},
   {id:"vav", name:"VAV Radyo", sub:"Kur'an'ın Sesi", freq:"91.60", cat:"Din", ac:"#059669", ab:"VV", tags:["manevi"],
@@ -1061,6 +1073,7 @@ function paint(c, cv, freq, tw, mode){
     return energy/N;
   }
 
+  /* --- BAR / MIRROR modları: 30 çubuk, mavi→turuncu gradyan, yuvarlatılmış üst --- */
   const mirror = (mode==="mirror");
   const N = mirror ? 40 : 30, bw = w/N;
   for(let i=0;i<N;i++){
@@ -1073,6 +1086,7 @@ function paint(c, cv, freq, tw, mode){
     const bh = Math.max(2, v*h*0.92);
     const rad = Math.min(bwid/2, 4);
 
+    /* gradyan: alt → mavi, üst → turuncu (referans görsele uygun) */
     let g;
     if(mirror){
       const mbh = Math.max(2, v*h*0.46);
@@ -1086,11 +1100,13 @@ function paint(c, cv, freq, tw, mode){
       g = c.createLinearGradient(0,h,0,h-bh);
       g.addColorStop(0,"#0088ff"); g.addColorStop(1,"#ff9100");
       c.fillStyle=g; c.globalAlpha=.92;
+      /* glow */
       c.shadowColor="#ff9100"; c.shadowBlur=6;
       c.beginPath();
       c.roundRect(bx, h-bh, bwid, bh, [rad,rad,0,0]);
       c.fill();
       c.shadowBlur=0;
+      /* üst highlight çizgisi */
       c.globalAlpha=.22;
       c.fillStyle="#fff";
       c.fillRect(bx, h-bh-2, bwid, 2);
@@ -1100,6 +1116,7 @@ function paint(c, cv, freq, tw, mode){
   return energy/N;
 }
 
+/* VU iğnesi + L/R seviye çubukları */
 let smL=0, smR=0, lastMeter=0;
 function meters(tw, energy){
   const now = performance.now();
@@ -1135,6 +1152,7 @@ function pulse(e){
   document.querySelectorAll(".woofer").forEach(g=> g.style.transform = "scale("+sc.toFixed(3)+")");
 }
 
+/* ---- FM kadran ---- */
 const dial = $("dial"), dctx = dial.getContext("2d");
 function sizeDial(){
   const r = dial.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio||1);
@@ -1174,6 +1192,7 @@ function drawDial(){
   if(dn) dn.textContent = state.current && state.current.freq ? state.current.freq+" MHz" : "--.-- MHz";
 }
 
+/* ---- ekolayzer eğrisi ---- */
 function drawEqCurve(){
   const c=$("eqCurve"); if(!c) return;
   const r=c.getBoundingClientRect(), dpr=Math.min(2,window.devicePixelRatio||1);
@@ -1345,6 +1364,7 @@ function renderDrive(){
   $("drTitle").textContent = st ? st.name.toUpperCase() : "RADYO SEÇİN";
   $("drSub").textContent = st ? ((st.freq||"--")+" MHz · "+(st.sub||"")) : "Hazır";
   $("drPlay").textContent = state.playing ? "⏸" : "▶";
+  updateDrVol();
 }
 
 function render(){
@@ -1402,280 +1422,268 @@ function signal(){
 }
 setInterval(signal, 1500);
 
+/* ---- ticker ---- */
 let tIdx=0;
 function tickerLines(){
   const st=state.current||{};
   const m=String(Math.floor(state.elapsed/60)).padStart(2,"0"), s=String(state.elapsed%60).padStart(2,"0");
   const now=new Date().toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
   return [
-    {t:"♪ " + (st.name ? st.name.toUpperCase() + " — " + (st.sub || "CANLI YAYIN") : "OTO RADYO DSP — CANLI RADYO") + " ♪"},
-    {t:"FREKANS: " + (st.freq || "--.--") + " MHz · " + (st.cat || "HD SES")},
-    {t:"DİNLEME SÜRESİ: " + m + ":" + s + " · SAAT: " + now},
-    {t:"© 2026 HALİL KILIÇ · TÜM HAKLARI SAKLIDIR"}
+    {t:"♪ "+(st.sub||"OTO RADYO DSP")+" ♪"},
+    {t:"FREKANS "+(st.freq||"--")+" MHz · HD STEREO"},
+    {t: state.playing ? ("DİNLEME SÜRESİ "+m+":"+s) : "YAYIN DURAKLATILDI", b: !state.playing},
+    {t:"AKTİF DSP PROFİLİ: "+state.preset.toUpperCase()+(state.eqOn?"":" (KAPALI)")},
+    {t:"SES "+state.vol+"% · "+(state.mode==="eq"?"EKOLAYZER AKTİF":"DOĞRUDAN ÇALMA")},
+    {t:($("wTemp").textContent||"")+" "+($("wDesc").textContent||"")+" · SAAT "+now},
+    {t: state.playing ? "● CANLI YAYIN AKTİF" : "○ BAĞLANTI BEKLENİYOR", b: state.playing}
   ];
 }
+setInterval(()=>{
+  const lines=tickerLines(); tIdx=(tIdx+1)%lines.length;
+  const el=$("ticker"), l=lines[tIdx];
+  el.textContent=l.t; el.className="ticker"+(l.b?" blink":"");
+}, 4200);
 
-function updateTicker(){
-  const lines = tickerLines();
-  tIdx = (tIdx + 1) % lines.length;
-  const tk = $("ticker");
-  if(tk){
-    tk.textContent = lines[tIdx].t;
+function startClockTimer(){ stopClockTimer(); tickT=setInterval(()=>{ state.elapsed++;
+  $("elapsed").textContent = String(Math.floor(state.elapsed/60)).padStart(2,"0")+":"+String(state.elapsed%60).padStart(2,"0"); },1000); }
+function stopClockTimer(){ if(tickT) clearInterval(tickT); tickT=null; }
+
+/* ---- saat ---- */
+setInterval(()=>{
+  const d=new Date();
+  $("clkTime").textContent=d.toLocaleTimeString("tr-TR");
+  $("clkDate").textContent=d.toLocaleDateString("tr-TR");
+  $("drClock").textContent=d.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+  if(sleepEnd){
+    const left=Math.max(0,Math.round((sleepEnd-Date.now())/1000));
+    $("sleepTxt").textContent=String(Math.floor(left/60)).padStart(2,"0")+":"+String(left%60).padStart(2,"0");
   }
-}
-setInterval(updateTicker, 4000);
+},1000);
 
-function updateClock(){
-  const d = new Date();
-  const timeStr = d.toLocaleTimeString("tr-TR", {hour:"2-digit", minute:"2-digit", second:"2-digit"});
-  const dateStr = d.toLocaleDateString("tr-TR", {day:"2-digit", month:"2-digit", year:"numeric"});
-  if($("clkTime")) $("clkTime").textContent = timeStr;
-  if($("clkDate")) $("clkDate").textContent = dateStr;
-  if($("drClock")) $("drClock").textContent = d.toLocaleTimeString("tr-TR", {hour:"2-digit", minute:"2-digit"});
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-let elapsedTimer = null;
-function startClockTimer(){
-  if(elapsedTimer) clearInterval(elapsedTimer);
-  elapsedTimer = setInterval(()=>{
-    if(state.playing){
-      state.elapsed++;
-      const m = String(Math.floor(state.elapsed/60)).padStart(2,"0");
-      const s = String(state.elapsed%60).padStart(2,"0");
-      if($("elapsed")) $("elapsed").textContent = m+":"+s;
-    }
-  }, 1000);
-}
-function stopClockTimer(){
-  clearInterval(elapsedTimer);
-}
-
-function initWeather(){
-  const sel = $("citySelect");
-  if(sel){
-    sel.innerHTML = CITIES.map(c=>`<option value="${c[0]}" ${c[0]===state.city?"selected":""}>${c[0]}</option>`).join("");
-    sel.onchange = ()=>{
-      state.city = sel.value; LS.set("city", state.city); fetchWeather();
-    };
-  }
-  fetchWeather();
-  setInterval(fetchWeather, 600000);
-}
-
-function fetchWeather(){
-  const cityData = CITIES.find(c=>c[0]===state.city) || CITIES[6];
-  const lat = cityData[1], lon = cityData[2];
-  fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
-    .then(res=>res.json())
-    .then(data=>{
-      if(data && data.current_weather){
-        const cw = data.current_weather;
-        const code = cw.weathercode;
-        const info = WCODES[code] || ["🌡️", "Normal"];
-        if($("wIco")) $("wIco").textContent = info[0];
-        if($("wTemp")) $("wTemp").textContent = Math.round(cw.temperature)+"°";
-        if($("wDesc")) $("wDesc").textContent = info[1];
-      }
-    }).catch(()=>{
-      if($("wDesc")) $("wDesc").textContent = state.city;
-    });
-}
-
-document.addEventListener("DOMContentLoaded", ()=>{
-  initWeather();
-  renderFilters();
-  renderPresets();
-  renderBands();
-  renderSlots();
-  renderRecent();
-  renderList();
-
-  if(state.theme==="light") document.documentElement.setAttribute("data-theme", "light");
-  $("btnTheme").onclick = ()=>{
-    state.theme = state.theme==="dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", state.theme);
-    LS.set("theme", state.theme);
-  };
-
-  ["btnPlay","mPlay","shPlay","drPlay"].forEach(id=>{
-    if($(id)) $(id).onclick = ()=> toggle();
-  });
-  ["btnStop","shStop","drStop"].forEach(id=>{
-    if($(id)) $(id).onclick = ()=> stopPlay();
-  });
-  ["btnNext","mNext","shNext"].forEach(id=>{
-    if($(id)) $(id).onclick = ()=> step(1);
-  });
-  ["btnPrev","mPrev","shPrev"].forEach(id=>{
-    if($(id)) $(id).onclick = ()=> step(-1);
-  });
-
-  $("sVol").oninput = e=>{
-    state.vol = +e.target.value;
-    audioA.volume = state.muted ? 0 : state.vol/100;
-    audioB.volume = state.muted ? 0 : state.vol/100;
-    $("vVol").textContent = state.vol+"%";
-    LS.set("vol", state.vol);
-    msVol();
-  };
-  $("sVol").value = state.vol;
-  $("vVol").textContent = state.vol+"%";
-
-  $("btnMute").onclick = ()=>{
-    state.muted = !state.muted;
-    audioA.volume = state.muted ? 0 : state.vol/100;
-    audioB.volume = state.muted ? 0 : state.vol/100;
-    render();
-  };
-
-  ["sBass","sMid","sTreb","sBal"].forEach(id=>{
-    const el = $(id);
-    if(el){
-      const k = id.replace("s","").toLowerCase();
-      el.value = state.tone[k];
-      el.oninput = ()=>{
-        state.tone[k] = +el.value;
-        const v = state.tone[k];
-        if(k==="bal") $("vBal").textContent = v===0 ? "C" : (v>0 ? "R"+v : "L"+Math.abs(v));
-        else {
-          const cap = k.charAt(0).toUpperCase() + k.slice(1);
-          if($("v"+cap)) $("v"+cap).textContent = v + "dB";
-        }
-        LS.set("tone", state.tone);
-        applyAudio();
-      };
-    }
-  });
-  $("vBass").textContent = state.tone.bass + "dB";
-  $("vMid").textContent = state.tone.mid + "dB";
-  $("vTreb").textContent = state.tone.treb + "dB";
-  $("vBal").textContent = state.tone.bal === 0 ? "C" : (state.tone.bal > 0 ? "R"+state.tone.bal : "L"+Math.abs(state.tone.bal));
-
-  $("btnEq").onclick = ()=>{
-    state.eqOn = !state.eqOn;
-    LS.set("eqOn", state.eqOn);
-    applyAudio(); render();
-  };
-  $("btnNorm").onclick = ()=>{
-    state.norm = !state.norm;
-    LS.set("norm", state.norm);
-    applyAudio(); render();
-  };
-
-  document.querySelectorAll(".vtab").forEach(b=>{
-    b.onclick = ()=>{
-      document.querySelectorAll(".vtab").forEach(x=>x.classList.remove("on"));
-      b.classList.add("on");
-      state.vizMode = b.dataset.v;
-      LS.set("vizMode", state.vizMode);
-      $("vizTag").textContent = b.textContent + " ANALİZ · 10 BANT DSP";
-    };
-  });
-
-  $("search").oninput = e=>{
-    state.q = e.target.value;
-    renderList();
-  };
-
-  $("btnDrawer").onclick = ()=> { $("drawer").classList.add("open"); $("drawerOverlay").classList.add("show"); };
-  $("drawerClose").onclick = ()=> { $("drawer").classList.remove("open"); $("drawerOverlay").classList.remove("show"); };
-  $("drawerOverlay").onclick = ()=> { $("drawer").classList.remove("open"); $("drawerOverlay").classList.remove("show"); };
-
-  $("eqHead").onclick = ()=> $("eqPanel").classList.toggle("open");
-
-  $("btnDrive").onclick = ()=> { $("drive").classList.add("show"); renderDrive(); };
-  $("drExit").onclick = ()=> $("drive").classList.remove("show");
-  $("btnShow").onclick = ()=> { $("showMode").classList.add("show"); renderShow(); };
-  $("shExit").onclick = ()=> $("showMode").classList.remove("show");
-
-  $("btnWake").onclick = async ()=>{
-    if("wakeLock" in navigator){
-      try{
-        if(!wake) { wake = await navigator.wakeLock.request("screen"); toast("Ekran uyanık tutuluyor"); }
-        else { wake.release(); wake=null; toast("Ekran kilidi serbest bırakıldı"); }
-      }catch(e){ toast("Ekran kilidi desteklenmiyor"); }
-    } else { toast("Tarayıcınız ekran kilidini desteklemiyor"); }
-  };
-
-  $("btnAssign").onclick = ()=>{
-    state.assign = !state.assign;
-    $("btnAssign").classList.toggle("on", state.assign);
-    toast(state.assign ? "Hızlı slot için bir radyo seçin" : "Atama iptal edildi");
-  };
-
-  $("btnAdd").onclick = ()=> $("modalAdd").classList.add("show");
-  $("addCancel").onclick = ()=> $("modalAdd").classList.remove("show");
-  $("addOk").onclick = ()=>{
-    const name = $("addName").value.trim();
-    const freq = $("addFreq").value.trim() || "100.00";
-    const url = $("addUrl").value.trim();
-    if(!name || !url){ toast("Lütfen ad ve yayın adresi girin"); return; }
-    const newSt = {
-      id: "custom_" + Date.now(),
-      name: name,
-      sub: "Özel Eklenen Radyo",
-      freq: freq,
-      cat: "Benim Radyolarım",
-      ac: "#ff9100",
-      ab: name.slice(0,2).toUpperCase(),
-      tags: ["custom"],
-      src: [url]
-    };
-    state.list.push(newSt);
-    const customList = LS.get("custom", []);
-    customList.push(newSt);
-    LS.set("custom", customList);
-    $("modalAdd").classList.remove("show");
-    $("addName").value = ""; $("addFreq").value = ""; $("addUrl").value = "";
-    renderList();
-    toast("Radyo başarıyla eklendi");
-  };
-
-  $("btnSavePreset").onclick = ()=>{
-    const pName = prompt("Özel ekolayzer profili için bir ad girin:");
-    if(pName && pName.trim()){
-      state.userPresets[pName.trim()] = state.gains.slice();
-      LS.set("userPresets", state.userPresets);
-      state.preset = pName.trim();
-      LS.set("preset", state.preset);
-      renderPresets();
-      toast("Profil kaydedildi: " + pName);
-    }
-  };
-
-  const sleepTimes = [0, 15, 30, 45, 60, 90, 120];
-  $("sleepOpts").innerHTML = sleepTimes.map(m=>`<button class="btn" data-m="${m}">${m===0?"İptal":m+" Dakika"}</button>`).join("");
-  $("btnSleep").onclick = ()=> $("modalSleep").classList.add("show");
-  $("sleepOpts").querySelectorAll("[data-m]").forEach(b=>{
-    b.onclick = ()=>{
-      const mins = +b.dataset.m;
-      clearTimeout(sleepT);
-      $("modalSleep").classList.remove("show");
-      if(mins===0){
-        $("sleepTxt").textContent = "Zamanlayıcı";
-        toast("Uyku zamanlayıcı kapatıldı");
-      } else {
-        sleepEnd = Date.now() + mins*60000;
-        $("sleepTxt").textContent = mins + "dk";
-        toast("Uyku zamanlayıcı: " + mins + " dakika");
-        sleepT = setTimeout(()=>{
-          stopPlay();
-          $("sleepTxt").textContent = "Zamanlayıcı";
-          toast("Süre doldu · Radyo kapatıldı");
-        }, mins*60000);
-      }
-    };
-  });
-
-  const lastId = LS.get("last", null);
-  if(lastId){
-    const found = byId(lastId);
-    if(found) { state.current = found; render(); }
-  }
-  sizeViz();
+/* ---- hava durumu ---- */
+const citySelect=$("citySelect");
+CITIES.forEach(c=>{
+  const o=document.createElement("option");
+  o.value=c[1]+","+c[2]; o.textContent=c[0];
+  if(c[0]===state.city) o.selected=true;
+  citySelect.appendChild(o);
 });
+async function weather(){
+  const [lat,lon]=citySelect.value.split(",");
+  $("wIco").textContent="⏳"; $("wTemp").textContent="--°"; $("wDesc").textContent="Yükleniyor";
+  try{
+    const r=await fetch("https://api.open-meteo.com/v1/forecast?latitude="+lat+"&longitude="+lon+"&current_weather=true");
+    const j=await r.json(), cw=j.current_weather;
+    if(!cw) throw 0;
+    const info=WCODES[cw.weathercode]||["🌡️","Bilinmiyor"];
+    $("wIco").textContent=info[0];
+    $("wTemp").textContent=Math.round(cw.temperature)+"°C";
+    $("wDesc").textContent=info[1]+" · "+Math.round(cw.windspeed)+"km/s";
+  }catch(e){ $("wIco").textContent="⚠️"; $("wDesc").textContent="Veri alınamadı"; }
+}
+citySelect.onchange=()=>{
+  state.city=citySelect.options[citySelect.selectedIndex].textContent;
+  LS.set("city", state.city); weather();
+};
+weather(); setInterval(weather, 15*60*1000);
+
+/* ================= KONTROLLER ================= */
+$("btnPlay").onclick=$("mPlay").onclick=$("drPlay").onclick=toggle;
+$("btnStop").onclick=$("drStop").onclick=stopPlay;
+$("btnPrev").onclick=$("mPrev").onclick=$("drPrev").onclick=()=>step(-1);
+$("btnNext").onclick=$("mNext").onclick=$("drNext").onclick=()=>step(1);
+
+function setVol(v){
+  state.vol=Math.max(0,Math.min(100,Math.round(v)));
+  LS.set("vol", state.vol);
+  $("sVol").value=state.vol; $("vVol").textContent=state.vol+"%";
+  const g = state.muted ? 0 : state.vol/100;
+  audioA.volume=g; audioB.volume=g;
+  updateDrVol();
+}
+function updateDrVol(){
+  const f=$("drVolFill"),p=$("drVolPct");
+  if(!f||!p) return;
+  const v=state.muted?0:state.vol;
+  f.style.width=v+"%"; p.textContent=v+"%";
+  f.style.boxShadow="0 0 12px -2px "+(v>80?"var(--red)":v>50?"var(--orange)":"var(--green)");
+}
+$("sVol").oninput=e=>{ state.muted=false; setVol(+e.target.value); render(); };
+$("drVolUp").onclick=()=>setVol(state.vol+5);
+$("drVolDn").onclick=()=>setVol(state.vol-5);
+$("btnMute").onclick=()=>{ state.muted=!state.muted; setVol(state.vol); render(); };
+
+$("btnEq").onclick=()=>{
+  state.eqOn=!state.eqOn; LS.set("eqOn",state.eqOn); applyAudio(); render();
+  toast(state.eqOn?"Ekolayzer açık":"Ekolayzer kapalı (ham ses)");
+};
+$("btnNorm").onclick=()=>{
+  state.norm=!state.norm; LS.set("norm",state.norm);
+  if(ctx){ wire(); applyAudio(); }
+  render(); toast(state.norm?"Ses seviyesi dengeleme açık":"Dengeleme kapalı");
+};
+
+function tone(key, id, valId, fmt){
+  const inp=$(id);
+  inp.value=state.tone[key];
+  $(valId).textContent=fmt(state.tone[key]);
+  inp.oninput=()=>{
+    state.tone[key]=+inp.value; LS.set("tone",state.tone);
+    $(valId).textContent=fmt(state.tone[key]); applyAudio();
+  };
+}
+tone("bass","sBass","vBass",v=>(v>0?"+":"")+v+"dB");
+tone("mid","sMid","vMid",v=>(v>0?"+":"")+v+"dB");
+tone("treb","sTreb","vTreb",v=>(v>0?"+":"")+v+"dB");
+tone("bal","sBal","vBal",v=> v<-0.05?("L"+Math.round(-v*100)):v>0.05?("R"+Math.round(v*100)):"C");
+
+$("eqHead").onclick=()=>$("eqPanel").classList.toggle("open");
+$("btnSavePreset").onclick=()=>{
+  const n=prompt("Profil adı:","Profilim "+(Object.keys(state.userPresets).length+1));
+  if(!n) return;
+  state.userPresets[n]=state.gains.slice();
+  LS.set("userPresets", state.userPresets);
+  state.preset=n; LS.set("preset",n); renderPresets(); toast("Profil kaydedildi");
+};
+
+$("btnAssign").onclick=()=>{
+  state.assign=!state.assign; state.pendingSlot=null;
+  $("btnAssign").classList.toggle("on", state.assign);
+  toast(state.assign ? "Şimdi bir slota (veya radyoya) dokunun" : "Atama iptal");
+};
+
+$("search").oninput=e=>{ state.q=e.target.value; renderList(); };
+
+/* tema */
+function applyTheme(){
+  document.documentElement.setAttribute("data-theme", state.theme);
+  const tb=$("btnTheme");
+  if(tb){ tb.textContent = state.theme==="light" ? "☀️" : "🌙"; }
+}
+$("btnTheme").onclick=()=>{
+  state.theme = state.theme==="light" ? "dark" : "light";
+  LS.set("theme", state.theme); applyTheme();
+};
+
+/* sürüş modu */
+$("btnDrive").onclick=()=>{ $("drive").classList.add("show"); renderDrive(); };
+$("drExit").onclick=()=> $("drive").classList.remove("show");
+
+/* vitrin modu */
+$("btnShow").onclick=()=>{
+  $("showMode").classList.add("show");
+  renderShow(); requestAnimationFrame(()=>{ sizeViz(); loopViz(); });
+};
+$("shExit").onclick=()=> $("showMode").classList.remove("show");
+$("shPlay").onclick=()=> toggle();
+$("shStop").onclick=stopPlay;
+$("shPrev").onclick=()=> step(-1);
+$("shNext").onclick=()=> step(1);
+
+/* çekmece (drawer) */
+function openDrawer(){ $("drawer").classList.add("open"); $("drawerOverlay").classList.add("show"); }
+function closeDrawer(){ $("drawer").classList.remove("open"); $("drawerOverlay").classList.remove("show"); }
+$("btnDrawer").onclick = openDrawer;
+$("drawerClose").onclick = closeDrawer;
+$("drawerOverlay").onclick = closeDrawer;
+
+/* görünüm sekmeleri */
+document.querySelectorAll(".vtab").forEach(b=> b.onclick=()=>{
+  state.vizMode=b.dataset.v; LS.set("vizMode", state.vizMode);
+  document.querySelectorAll(".vtab").forEach(x=> x.classList.toggle("on", x===b));
+  const tag={bars:"SPEKTRUM ANALİZ · 10 BANT DSP",wave:"DALGA FORMU · GERÇEK ZAMAN",
+             ring:"HALKA ANALİZÖR · 360°",mirror:"AYNA SPEKTRUM · STEREO"}[state.vizMode];
+  const t=$("vizTag"); if(t) t.textContent=tag;
+});
+
+/* kadranla istasyon seçimi */
+dial.addEventListener("click", e=>{
+  const r=dial.getBoundingClientRect();
+  const lo=87.5, hi=108.0, pad=r.width*0.03;
+  const f = lo + Math.min(1, Math.max(0, (e.clientX-r.left-pad)/(r.width-pad*2)))*(hi-lo);
+  let best=null, bd=99;
+  state.list.forEach(s=>{
+    const sf=parseFloat(s.freq);
+    if(!isFinite(sf)) return;
+    const d=Math.abs(sf-f);
+    if(d<bd){ bd=d; best=s; }
+  });
+  if(best && bd<1.2) play(best,0); else toast("Bu frekansta kayıtlı yayın yok");
+});
+
+/* ekran açık */
+$("btnWake").onclick=async ()=>{
+  try{
+    if(wake){ await wake.release(); wake=null; $("btnWake").classList.remove("on"); toast("Ekran kilidi serbest"); return; }
+    wake = await navigator.wakeLock.request("screen");
+    wake.addEventListener("release", ()=>{ wake=null; $("btnWake").classList.remove("on"); });
+    $("btnWake").classList.add("on"); toast("Ekran açık tutuluyor");
+  }catch(e){ toast("Bu tarayıcı ekranı açık tutmayı desteklemiyor"); }
+};
+
+/* uyku zamanlayıcı */
+const SLEEPS=[15,30,45,60,90,120];
+$("sleepOpts").innerHTML = SLEEPS.map(m=>`<button class="btn" data-s="${m}">${m} dk</button>`).join("")
+  + `<button class="btn danger on" data-s="0">Kapat</button>`;
+$("sleepOpts").querySelectorAll("[data-s]").forEach(b=> b.onclick=()=>{
+  const m=+b.dataset.s;
+  clearTimeout(sleepT); sleepEnd=0;
+  if(m>0){
+    sleepEnd=Date.now()+m*60000;
+    sleepT=setTimeout(()=>{ stopPlay(); sleepEnd=0; $("sleepTxt").textContent="Zamanlayıcı"; toast("Uyku zamanlayıcı: yayın durduruldu"); }, m*60000);
+    toast(m+" dakika sonra kapanacak");
+  } else { $("sleepTxt").textContent="Zamanlayıcı"; toast("Zamanlayıcı kapatıldı"); }
+  $("modalSleep").classList.remove("show");
+});
+$("btnSleep").onclick=()=> $("modalSleep").classList.add("show");
+$("modalSleep").onclick=e=>{ if(e.target===$("modalSleep")) $("modalSleep").classList.remove("show"); };
+
+/* kendi radyonu ekle */
+$("btnAdd").onclick=()=> $("modalAdd").classList.add("show");
+$("addCancel").onclick=()=> $("modalAdd").classList.remove("show");
+$("modalAdd").onclick=e=>{ if(e.target===$("modalAdd")) $("modalAdd").classList.remove("show"); };
+$("addOk").onclick=()=>{
+  const n=$("addName").value.trim(), u=$("addUrl").value.trim(), f=$("addFreq").value.trim();
+  if(!n || !/^https?:\/\//i.test(u)){ toast("Ad ve geçerli bir yayın adresi girin"); return; }
+  const st={id:"c"+Date.now(), name:n, sub:"Benim radyom", freq:f||"--", cat:"Özel",
+            ac:"#4cc9f0", ab:n.slice(0,2).toUpperCase(), tags:["custom"], src:[u]};
+  const cs=LS.get("custom",[])||[]; cs.push(st); LS.set("custom",cs);
+  state.list.push(st);
+  $("addName").value=""; $("addUrl").value=""; $("addFreq").value="";
+  $("modalAdd").classList.remove("show");
+  state.filter="custom"; renderFilters(); renderList(); toast("Radyo eklendi");
+};
+
+/* klavye */
+document.addEventListener("keydown", e=>{
+  if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT") return;
+  if(e.key==="MediaPlayPause"){ e.preventDefault(); toggle(); }
+  else if(e.key==="MediaTrackNext"){ e.preventDefault(); step(1); }
+  else if(e.key==="MediaTrackPrevious"){ e.preventDefault(); step(-1); }
+  else if(e.key==="MediaStop"){ e.preventDefault(); stopPlay(); }
+  else if(e.code==="Space"){ e.preventDefault(); toggle(); }
+  else if(e.key==="Escape"){ closeDrawer(); $("showMode").classList.remove("show"); $("drive").classList.remove("show"); }
+  else if(e.key==="ArrowRight") step(1);
+  else if(e.key==="ArrowLeft") step(-1);
+  else if(e.key==="ArrowUp"){ e.preventDefault(); setVol(state.vol+5); }
+  else if(e.key==="ArrowDown"){ e.preventDefault(); setVol(state.vol-5); }
+  else if(e.key>="1" && e.key<="6"){ const id=state.slots[+e.key-1]; if(id) play(byId(id),0); }
+});
+
+/* ================= BAŞLAT ================= */
+applyTheme(); setVol(state.vol);
+renderFilters(); renderPresets(); renderBands(); renderRecent(); renderSlots(); render();
+document.querySelectorAll(".vtab").forEach(b=> b.classList.toggle("on", b.dataset.v===state.vizMode));
+{
+  const tag={bars:"SPEKTRUM ANALİZ · 10 BANT DSP",wave:"DALGA FORMU · GERÇEK ZAMAN",
+             ring:"HALKA ANALİZÖR · 360°",mirror:"AYNA SPEKTRUM · STEREO"}[state.vizMode];
+  const t=$("vizTag"); if(t && tag) t.textContent=tag;
+}
+sizeViz();
+const last = LS.get("last", null);
+if(last && byId(last)){ state.current = byId(last); render(); setStatus("Hazır · son dinlenen: "+state.current.name); }
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) sizeViz(); });
+setTimeout(sizeViz, 300);
 </script>
 </body>
 </html>
