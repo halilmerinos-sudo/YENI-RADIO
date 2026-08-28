@@ -35,8 +35,8 @@ html,body{margin:0;padding:0;height:100vh;overflow:hidden;
   gap:4px}
 
 /* ===== BANT 1: ÜST BİLGİ ===== */
-.band-h{flex:0 0 auto;min-height:48px;max-height:10vh;
-  display:flex;align-items:center;gap:8px;padding:6px 10px;
+.band-h{flex:0 0 auto;min-height:46px;
+  display:flex;align-items:center;gap:8px;padding:6px 10px;row-gap:5px;
   background:linear-gradient(180deg,color-mix(in srgb,var(--panel-bg) 88%,transparent),var(--panel-2));
   border:1px solid var(--border);border-radius:12px;
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
@@ -48,7 +48,7 @@ html,body{margin:0;padding:0;height:100vh;overflow:hidden;
 .sign b{color:var(--yellow);font-weight:800;letter-spacing:1.4px}
 .hdtag{font-size:7.5px;font-weight:900;letter-spacing:1.2px;color:#07070a;background:var(--green);
   border-radius:3px;padding:1px 4px;margin-left:5px;vertical-align:1px}
-.h-right{margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.h-right{margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;min-width:0}
 .weather,.clock{display:flex;align-items:center;gap:5px;
   background:rgba(0,0,0,.3);border:1px solid var(--border-soft);border-radius:8px;padding:3px 8px;font-size:11px}
 [data-theme="light"] .weather,[data-theme="light"] .clock{background:rgba(255,255,255,.45)}
@@ -59,11 +59,13 @@ html,body{margin:0;padding:0;height:100vh;overflow:hidden;
 .clock{font-variant-numeric:tabular-nums}
 #clkTime{font-size:14px;font-weight:800;color:var(--cyan)}
 #clkDate{font-size:10.5px;color:var(--orange)}
-.h-btns{display:flex;gap:5px}
+.h-btns{display:flex;gap:5px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;-ms-overflow-style:none;max-width:100%;padding-bottom:1px}
+.h-btns::-webkit-scrollbar{display:none}
 .btn{background:var(--panel-2);border:1px solid var(--border);color:var(--txt);
   border-radius:8px;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;
-  letter-spacing:.3px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;
-  min-height:36px}
+  letter-spacing:.3px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:4px;
+  min-height:36px;min-width:38px;flex:0 0 auto;touch-action:manipulation}
 .btn:active{transform:scale(.95)}
 .btn.on{border-color:var(--accent);color:var(--accent);box-shadow:0 0 10px -2px var(--accent) inset}
 .btn.danger.on{border-color:var(--red);color:var(--red);box-shadow:0 0 10px -2px var(--red) inset}
@@ -337,18 +339,30 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border:2px solid var(
 .mini{display:none!important}
 
 /* ===== DUYARLI TASARIM ===== */
+@media (max-width:1100px){
+  .band-h{flex-wrap:wrap}
+  .h-right{margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+  .h-btns{flex:1 1 100%;justify-content:flex-start}
+}
 @media (max-width:900px){
   .band-m{flex-direction:column}
-  .col-viz{flex:0 0 auto;min-height:28vh;max-height:35vh}
+  .col-viz{flex:0 0 auto;min-height:24vh;max-height:32vh}
   .col-info{flex:0 0 auto;min-height:14vh}
   .col-ctrl{flex:0 0 auto;min-height:12vh}
   .w-desc{display:none}
   .tone input[type=range]{width:56px}
   .drawer{width:min(360px,85vw)}
+  .dr-ctrl{flex-wrap:wrap;gap:10px}
+  .dr-ctrl .cbtn{width:64px;height:64px;font-size:24px;border-radius:16px}
+  .dr-ctrl .cbtn.play{width:84px;height:84px;font-size:32px;border-radius:22px}
+  .dr-ctrl .cbtn.stop{width:70px;height:70px;font-size:26px;border-radius:18px}
+  .dr-title{font-size:26px}
+  .dr-vol-track{flex:1 1 auto;max-width:340px}
 }
 @media (max-width:540px){
   .logo{font-size:11px}
-  .weather select{max-width:68px;font-size:9.5px}
+  .sign{font-size:7.5px}
+  .weather select{max-width:64px;font-size:9.5px}
   .np-title{font-size:20px}
   .np-freq{font-size:12px}
   .cbtn{width:46px;height:46px;font-size:18px;border-radius:10px}
@@ -359,16 +373,43 @@ input[type=range]::-moz-range-thumb{width:12px;height:12px;border:2px solid var(
   .tone input[type=range]{width:48px}
   .pchips{gap:3px}
   .pchip{padding:2px 7px;font-size:9px}
-  .h-right{gap:3px}
-  .h-btns .btn{padding:4px 8px;font-size:10.5px}
-  .clock{padding:2px 5px}
+  .h-right{gap:4px;width:100%;margin-left:0}
+  .weather,.clock{flex:0 1 auto;min-width:0}
+  .h-btns .btn{padding:6px 9px;font-size:11.5px;min-height:38px;min-width:40px}
+  .h-btns #sleepTxt{display:none}
+  .clock{padding:3px 6px}
+  #clkTime{font-size:13px}
+  #clkDate{font-size:9.5px}
   .drawer{width:92vw}
+  .dr-vol-lbl{display:none}
+  .dr-vol-bar{padding:4px 8px;gap:8px}
+}
+@media (max-width:400px){
+  .h-btns .btn{padding:6px 7px;font-size:11px;min-width:38px}
+  .dr-ctrl .cbtn{width:56px;height:56px;font-size:21px;border-radius:14px}
+  .dr-ctrl .cbtn.play{width:72px;height:72px;font-size:28px;border-radius:18px}
+  .dr-ctrl .cbtn.stop{width:60px;height:60px;font-size:22px;border-radius:15px}
+  .dr-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+}
+/* Tesla / Navimex tipi kısa-geniş ekranlar */
+@media (max-height:620px) and (min-width:900px){
+  .band-h{min-height:42px;padding:4px 8px}
+  .btn{min-height:32px;padding:4px 10px;font-size:11px}
+  .band-d{flex:0 0 15vh;min-height:52px}
+  .band-dsp{flex:0 0 20vh;min-height:82px}
+  .cbtn{width:48px;height:48px;font-size:19px;border-radius:12px}
+  .cbtn.play{width:66px;height:66px;font-size:25px;border-radius:17px}
+  .cbtn.stop{width:48px;height:48px;font-size:19px;border-radius:12px}
+  .dr-ctrl .cbtn{width:64px;height:64px;font-size:25px}
+  .dr-ctrl .cbtn.play{width:82px;height:82px;font-size:31px}
+  .dr-ctrl .cbtn.stop{width:70px;height:70px;font-size:26px}
+  .dr-title{font-size:28px}
 }
 @media (orientation:portrait) and (max-width:900px){
   .band-m{flex-direction:column}
-  .col-viz{flex:0 0 30vh}
-  .col-info{flex:0 0 14vh}
-  .col-ctrl{flex:0 0 12vh}
+  .col-viz{flex:0 0 26vh}
+  .col-info{flex:0 0 15vh}
+  .col-ctrl{flex:0 0 auto;min-height:13vh}
 }
 </style>
 </head>
@@ -973,16 +1014,26 @@ function mediaSession(st){
     navigator.mediaSession.metadata = new MediaMetadata({
       title: st.name, artist: st.sub || "", album: "OTO RADYO DSP"
     });
-    navigator.mediaSession.setActionHandler("play",        ()=>{ if(!state.playing) toggle(); });
-    navigator.mediaSession.setActionHandler("pause",       ()=>{ if(state.playing) toggle(); });
-    navigator.mediaSession.setActionHandler("stop",        ()=> stopPlay());
-    navigator.mediaSession.setActionHandler("previoustrack", ()=> step(-1));
-    navigator.mediaSession.setActionHandler("nexttrack",     ()=> step(1));
+    registerMediaKeys();
     navigator.mediaSession.playbackState = "playing";
     if("setPositionState" in navigator.mediaSession){
       try{ navigator.mediaSession.setPositionState({duration:Infinity, playbackRate:1, position:0}); }catch(e){}
     }
   }catch(e){}
+}
+/* Direksiyon / araç tuşları — ileri, geri, ses ve oynat/durdur */
+function registerMediaKeys(){
+  if(!("mediaSession" in navigator) || !navigator.mediaSession.setActionHandler) return;
+  const set=(a,fn)=>{ try{ navigator.mediaSession.setActionHandler(a,fn); }catch(e){} };
+  set("play",          ()=>{ if(!state.playing) toggle(); });
+  set("pause",         ()=>{ if(state.playing) toggle(); });
+  set("stop",          ()=> stopPlay());
+  set("previoustrack", ()=> step(-1));
+  set("nexttrack",     ()=> step(1));
+  /* bazı araç üniteleri ileri/geri yerine sar-ileri / sar-geri gönderir */
+  set("seekforward",   ()=> step(1));
+  set("seekbackward",  ()=> step(-1));
+  set("seekto",        ()=>{});
 }
 function msPaused(){
   if(!("mediaSession" in navigator)) return;
@@ -1654,14 +1705,26 @@ $("addOk").onclick=()=>{
   state.filter="custom"; renderFilters(); renderList(); toast("Radyo eklendi");
 };
 
-/* klavye */
+/* klavye + araç / direksiyon tuşları */
+function hwKey(e){
+  const k=e.key||"", c=e.keyCode||0;
+  /* ses tuşları (araç ünitesi + telefon) */
+  if(k==="AudioVolumeUp"||k==="VolumeUp"||c===175){ e.preventDefault(); state.muted=false; setVol(state.vol+5); render(); toast("Ses "+state.vol+"%"); return true; }
+  if(k==="AudioVolumeDown"||k==="VolumeDown"||c===174){ e.preventDefault(); state.muted=false; setVol(state.vol-5); render(); toast("Ses "+state.vol+"%"); return true; }
+  if(k==="AudioVolumeMute"||k==="VolumeMute"||c===173){ e.preventDefault(); state.muted=!state.muted; setVol(state.vol); render(); return true; }
+  /* ileri / geri (medya tuşları + kanal tuşları) */
+  if(k==="MediaTrackNext"||k==="MediaNextTrack"||k==="ChannelUp"||c===176||c===427){ e.preventDefault(); step(1); return true; }
+  if(k==="MediaTrackPrevious"||k==="MediaPreviousTrack"||k==="ChannelDown"||c===177||c===428){ e.preventDefault(); step(-1); return true; }
+  if(k==="MediaFastForward"||c===417){ e.preventDefault(); step(1); return true; }
+  if(k==="MediaRewind"||c===412){ e.preventDefault(); step(-1); return true; }
+  if(k==="MediaPlayPause"||k==="MediaPlay"||k==="MediaPause"||c===179){ e.preventDefault(); toggle(); return true; }
+  if(k==="MediaStop"||c===178){ e.preventDefault(); stopPlay(); return true; }
+  return false;
+}
 document.addEventListener("keydown", e=>{
+  if(hwKey(e)) return;
   if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT") return;
-  if(e.key==="MediaPlayPause"){ e.preventDefault(); toggle(); }
-  else if(e.key==="MediaTrackNext"){ e.preventDefault(); step(1); }
-  else if(e.key==="MediaTrackPrevious"){ e.preventDefault(); step(-1); }
-  else if(e.key==="MediaStop"){ e.preventDefault(); stopPlay(); }
-  else if(e.code==="Space"){ e.preventDefault(); toggle(); }
+  if(e.code==="Space"){ e.preventDefault(); toggle(); }
   else if(e.key==="Escape"){ closeDrawer(); $("showMode").classList.remove("show"); $("drive").classList.remove("show"); }
   else if(e.key==="ArrowRight") step(1);
   else if(e.key==="ArrowLeft") step(-1);
@@ -1669,9 +1732,16 @@ document.addEventListener("keydown", e=>{
   else if(e.key==="ArrowDown"){ e.preventDefault(); setVol(state.vol-5); }
   else if(e.key>="1" && e.key<="6"){ const id=state.slots[+e.key-1]; if(id) play(byId(id),0); }
 });
+/* bazı araç tarayıcıları sadece keyup gönderir */
+document.addEventListener("keyup", e=>{
+  const k=e.key||"", c=e.keyCode||0;
+  if(k==="AudioVolumeUp"||k==="AudioVolumeDown"||c===175||c===174||
+     k==="MediaTrackNext"||k==="MediaTrackPrevious"||c===176||c===177) e.preventDefault();
+});
 
 /* ================= BAŞLAT ================= */
 applyTheme(); setVol(state.vol);
+try{ registerMediaKeys(); }catch(e){}
 renderFilters(); renderPresets(); renderBands(); renderRecent(); renderSlots(); render();
 document.querySelectorAll(".vtab").forEach(b=> b.classList.toggle("on", b.dataset.v===state.vizMode));
 {
